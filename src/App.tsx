@@ -137,8 +137,7 @@ export default function App() {
         <section className="sector-section">
           <div className="section-title">
             <div>
-              <h2>▦ &nbsp; Painel de setores</h2>
-              <p>Selecione um setor para consultar suas informações.</p>
+              <h2>▦ &nbsp; Painel de setores — ORGANOGRAMA DO SETOR</h2>
             </div>
             <input
               type="search"
@@ -181,7 +180,6 @@ export default function App() {
                 <p>{setorAtual.descricao}</p>
               </div>
             </div>
-            <span className="sector-tag">Setor da ASTINF</span>
           </div>
 
           <div className="detail-tabs">
