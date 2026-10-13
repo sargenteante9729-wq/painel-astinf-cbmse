@@ -1,101 +1,222 @@
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const setores = [
-  'Desenvolvimento de Sistemas',
-  'Infraestrutura e Redes',
-  'Suporte Técnico',
-  'Monitoramento e Indicadores',
-  'Gestão de Contratos',
+  {
+    nome: 'ADM',
+    descricao: 'Administração',
+    imagem: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=700&q=80',
+    cor: '#43d9a3',
+    atribuicoes: 5,
+    detalhes: ['Rotinas administrativas', 'Organização de documentos', 'Acompanhamento das atividades'],
+  },
+  {
+    nome: 'Contratos',
+    descricao: 'Gestão de contratos',
+    imagem: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=700&q=80',
+    cor: '#58a6ff',
+    atribuicoes: 4,
+    detalhes: ['Acompanhamento contratual', 'Fiscalização de contratos', 'Controle de vigência'],
+  },
+  {
+    nome: 'Logística',
+    descricao: 'Compras e processos',
+    imagem: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=700&q=80',
+    cor: '#e9b44c',
+    atribuicoes: 4,
+    detalhes: ['Acompanhamento de aquisições', 'Controle de materiais', 'Apoio aos processos'],
+  },
+  {
+    nome: 'Desenvolvimento',
+    descricao: 'Sistemas e soluções',
+    imagem: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=700&q=80',
+    cor: '#b69cff',
+    atribuicoes: 1,
+    detalhes: ['Desenvolvimento e manutenção de sistemas'],
+  },
+  {
+    nome: 'Suporte',
+    descricao: 'Suporte técnico de TI',
+    imagem: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=700&q=80',
+    cor: '#51d6ed',
+    atribuicoes: 1,
+    detalhes: ['Atendimento e suporte técnico'],
+  },
 ];
 
 export default function App() {
-  const [setorSelecionado, setSetorSelecionado] = useState(
-    'Visão Geral'
+  const [abertura, setAbertura] = useState(true);
+  const [selecionado, setSelecionado] = useState('ADM');
+  const [busca, setBusca] = useState('');
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (abertura && videoRef.current) {
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(() => {
+        // O botão de entrada continua disponível se o navegador
+        // bloquear a reprodução automática.
+      });
+    }
+  }, [abertura]);
+
+  const setorAtual =
+    setores.find((setor) => setor.nome === selecionado) ?? setores[0];
+
+  const setoresFiltrados = setores.filter((setor) =>
+    `${setor.nome} ${setor.descricao}`
+      .toLowerCase()
+      .includes(busca.toLowerCase())
   );
 
   return (
-    <div className="app">
+    <div className="dashboard">
+      {abertura && (
+        <section className="intro-screen">
+          <video
+            ref={videoRef}
+            className="intro-video"
+            src={`${import.meta.env.BASE_URL}videos/intro.mp4`}
+            autoPlay
+            muted
+            playsInline
+            preload="auto"
+            aria-label="Vídeo institucional de abertura do CBMSE"
+          />
+
+          <div className="intro-shade" />
+
+          <div className="intro-content">
+            <span className="intro-kicker">CORPO DE BOMBEIROS MILITAR</span>
+            <h1>ASTINF <span>| CBMSE</span></h1>
+            <p>Assessoria de Tecnologia da Informação</p>
+            <button
+              className="enter-button"
+              onClick={() => setAbertura(false)}
+            >
+              ENTRAR NO PAINEL <span>→</span>
+            </button>
+            <small>Clique para acessar o painel institucional</small>
+          </div>
+        </section>
+      )}
+
       <header className="topbar">
         <div className="brand">
           <div className="brand-symbol">CB</div>
           <div>
-            <strong>ASTINF | CBMSE</strong>
-            <span>Assessoria de Tecnologia da Informação</span>
+            <strong>ASTINF <span>| CBMSE</span></strong>
+            <small>Assessoria de Tecnologia da Informação</small>
           </div>
         </div>
-        <span className="status">PAINEL INSTITUCIONAL</span>
+        <span className="topbar-label">PAINEL DE GESTÃO</span>
       </header>
 
-      <main className="content">
-        <section className="welcome">
-          <span className="eyebrow">GESTÃO DE TECNOLOGIA</span>
-          <h1>Painel ASTINF</h1>
-          <p>
-            Acompanhamento dos setores, atividades e serviços
-            de Tecnologia da Informação do CBMSE.
-          </p>
+      <main className="main-content">
+        <section className="stats">
+          <article className="stat">
+            <span className="stat-icon">⌘</span>
+            <div><strong>05</strong><small>Setores integrados</small></div>
+          </article>
+          <article className="stat">
+            <span className="stat-icon">♙</span>
+            <div><strong>10</strong><small>Registros de equipe</small></div>
+          </article>
+          <article className="stat">
+            <span className="stat-icon">☷</span>
+            <div><strong>15</strong><small>Atribuições documentadas</small></div>
+          </article>
+          <div className="video-preview">
+            <video
+              src={`${import.meta.env.BASE_URL}videos/intro.mp4`}
+              muted
+              playsInline
+              preload="metadata"
+            />
+            <button onClick={() => setAbertura(true)}>
+              ▶ Rever abertura
+            </button>
+          </div>
         </section>
 
-        <section className="summary">
-          <article className="metric">
-            <span>Setores cadastrados</span>
-            <strong>{setores.length}</strong>
-            <small>Estrutura inicial</small>
-          </article>
-          <article className="metric">
-            <span>Sistemas</span>
-            <strong>—</strong>
-            <small>Dados a cadastrar</small>
-          </article>
-          <article className="metric">
-            <span>Contratos</span>
-            <strong>—</strong>
-            <small>Dados a cadastrar</small>
-          </article>
-        </section>
-
-        <section className="departments">
-          <div className="section-heading">
+        <section className="sector-section">
+          <div className="section-title">
             <div>
-              <h2>Setores e áreas de atuação</h2>
-              <p>Selecione uma área para consultar.</p>
+              <h2>▦ &nbsp; Painel de setores</h2>
+              <p>Selecione um setor para consultar suas informações.</p>
             </div>
+            <input
+              type="search"
+              value={busca}
+              onChange={(event) => setBusca(event.target.value)}
+              placeholder="⌕  Buscar setor..."
+              aria-label="Buscar setor"
+            />
           </div>
 
           <div className="sector-grid">
-            {setores.map((setor, index) => (
+            {setoresFiltrados.map((setor, index) => (
               <button
-                className={
-                  setorSelecionado === setor
-                    ? 'sector active'
-                    : 'sector'
-                }
-                key={setor}
-                onClick={() => setSetorSelecionado(setor)}
+                key={setor.nome}
+                className={`sector-card ${selecionado === setor.nome ? 'selected' : ''}`}
+                style={{ '--sector-color': setor.cor } as React.CSSProperties}
+                onClick={() => setSelecionado(setor.nome)}
               >
-                <span className="sector-number">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <strong>{setor}</strong>
-                <span className="sector-action">
-                  Consultar área →
-                </span>
+                <img src={setor.imagem} alt="" />
+                <div className="sector-card-content">
+                  <small>{String(index + 1).padStart(2, '0')} / ASTINF</small>
+                  <h3>{setor.nome}</h3>
+                  <p>{setor.descricao}</p>
+                  <div className="card-footer">
+                    <span>{setor.atribuicoes} atribuições</span>
+                    <span>→</span>
+                  </div>
+                </div>
               </button>
             ))}
           </div>
+        </section>
 
-          <div className="details">
-            <span className="eyebrow">ÁREA SELECIONADA</span>
-            <h2>{setorSelecionado}</h2>
-            <p>
-              Esta área está preparada para receber sua descrição,
-              equipe, responsabilidades, sistemas e indicadores.
-            </p>
+        <section className="sector-details">
+          <div className="detail-heading">
+            <div>
+              <span className="detail-symbol" style={{ color: setorAtual.cor }}>◈</span>
+              <div>
+                <h2>{setorAtual.nome}</h2>
+                <p>{setorAtual.descricao}</p>
+              </div>
+            </div>
+            <span className="sector-tag">Setor da ASTINF</span>
+          </div>
+
+          <div className="detail-tabs">
+            <span className="active-tab">Visão geral</span>
+            <span>Atribuições <b>{setorAtual.atribuicoes}</b></span>
+          </div>
+
+          <div className="detail-columns">
+            <section>
+              <h3>♙ &nbsp; EQUIPE E RESPONSÁVEIS</h3>
+              <div className="empty-panel">
+                Os nomes e responsáveis serão cadastrados após a
+                validação da estrutura oficial do setor.
+              </div>
+            </section>
+            <section>
+              <h3>☷ &nbsp; ATRIBUIÇÕES DO SETOR</h3>
+              <div className="assignment-list">
+                {setorAtual.detalhes.map((item, index) => (
+                  <div className="assignment" key={item}>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
         </section>
 
-        <footer>
+        <footer className="footer">
           Corpo de Bombeiros Militar do Estado de Sergipe
           <span>ASTINF · Painel de Gestão</span>
         </footer>
