@@ -35,23 +35,9 @@ button { -webkit-tap-highlight-color: transparent; }
   border-bottom: 1px solid #262d32;
 }
 
-.brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
-.brand-symbol {
-  flex: 0 0 48px;
-  width: 48px;
-  height: 48px;
-  border: 1px solid #59636b;
-  border-radius: 9px;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: -.5px;
-}
-.brand strong { display: block; color: #f5f7f8; font-size: 18px; letter-spacing: .2px; }
-.brand strong span { color: #e6e9eb; }
-.brand small { display: block; margin-top: 5px; color: #8d9aa4; font-size: 11px; }
+.brand { display: flex; align-items: center; gap: 22px; min-width: 0; }
+.brand-logo { display: block; width: 155px; max-height: 62px; object-fit: contain; }
+.brand-mission { color: #ff4848; font-size: clamp(10px, 1vw, 13px); font-weight: 800; letter-spacing: 1.5px; line-height: 1.5; }
 .topbar-label {
   border: 1px solid #303a42;
   border-radius: 6px;
@@ -142,8 +128,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .intro-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #030506; }
 .intro-shade { position: absolute; inset: 0; background: linear-gradient(180deg, #03050625 0%, #03050615 35%, #030506bb 100%); }
 .intro-content { position: relative; z-index: 1; width: min(680px, 90%); padding: 24px; text-align: center; }
-.intro-logo { display: block; width: min(430px, 78vw); max-height: 42vh; object-fit: contain; margin: 0 auto 24px; filter: drop-shadow(0 8px 24px #0008); }
-.intro-slogan { margin: 0 auto; color: #f4f7fa; font-size: clamp(14px, 2.4vw, 22px); font-weight: 800; letter-spacing: clamp(1px, .35vw, 3px); line-height: 1.5; text-shadow: 0 3px 18px #000; }
+.intro-kicker { color: #f4c35c; font-size: 10px; font-weight: 750; letter-spacing: 3px; }
 .intro-content h1 { margin: 15px 0 8px; color: #fff; font-size: clamp(32px, 6vw, 58px); letter-spacing: 1px; text-shadow: 0 3px 20px #000; }
 .intro-content h1 span { color: #e7e9eb; }
 .intro-content p { margin: 0; color: #d3d9de; font-size: clamp(12px, 2vw, 16px); }
@@ -168,9 +153,9 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 @media (max-width: 720px) {
   .topbar { min-height: 75px; padding: 14px 18px; }
-  .brand-symbol { width: 42px; height: 42px; flex-basis: 42px; }
-  .brand strong { font-size: 15px; }
-  .brand small { font-size: 10px; }
+  .brand-logo { width: 120px; max-height: 48px; }
+  .brand { gap: 12px; }
+  .brand-mission { font-size: 9px; letter-spacing: .6px; max-width: 180px; }
   .topbar-label { font-size: 8px; padding: 7px; letter-spacing: .4px; }
   .main-content { padding: 0 16px; }
   .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 14px 0; }
