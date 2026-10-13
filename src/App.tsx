@@ -88,9 +88,6 @@ export default function App() {
           <div className="intro-shade" />
 
           <div className="intro-content">
-            <span className="intro-kicker">CORPO DE BOMBEIROS MILITAR</span>
-            <h1>ASTINF <span>| CBMSE</span></h1>
-            <p>Assessoria de Tecnologia da Informação</p>
             <button
               className="enter-button"
               onClick={() => setAbertura(false)}
