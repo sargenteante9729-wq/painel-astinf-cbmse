@@ -78,6 +78,7 @@ export default function App() {
             className="intro-video"
             src={`${import.meta.env.BASE_URL}videos/intro.mp4`}
             autoPlay
+            loop
             muted
             playsInline
             preload="auto"
