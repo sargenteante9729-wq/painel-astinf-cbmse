@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 
 const setores = [
   {
@@ -159,7 +159,7 @@ export default function App() {
               <button
                 key={setor.nome}
                 className={`sector-card ${selecionado === setor.nome ? 'selected' : ''}`}
-                style={{ '--sector-color': setor.cor } as React.CSSProperties}
+                style={{ '--sector-color': setor.cor } as CSSProperties}
                 onClick={() => setSelecionado(setor.nome)}
               >
                 <img src={setor.imagem} alt="" />
