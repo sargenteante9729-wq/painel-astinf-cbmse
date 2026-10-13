@@ -88,9 +88,12 @@ export default function App() {
           <div className="intro-shade" />
 
           <div className="intro-content">
-            <span className="intro-kicker">CORPO DE BOMBEIROS MILITAR</span>
-            <h1>ASTINF <span>| CBMSE</span></h1>
-            <p>Assessoria de Tecnologia da Informação</p>
+            <img
+              className="intro-logo"
+              src={`${import.meta.env.BASE_URL}1.png`}
+              alt="ASTINF CBMSE — Assessoria de Tecnologia da Informação"
+            />
+            <p className="intro-slogan">TECNOLOGIA A SERVIÇO DA MISSÃO FIM</p>
             <button
               className="enter-button"
               onClick={() => setAbertura(false)}
