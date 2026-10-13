@@ -137,7 +137,7 @@ export default function App() {
         <section className="sector-section">
           <div className="section-title">
             <div>
-              <h2>▦ &nbsp; Painel de setores — ORGANOGRAMA DO SETOR</h2>
+              <h2>▦ &nbsp; ORGANOGRAMA DO SETOR</h2>
             </div>
             <input
               type="search"
