@@ -115,6 +115,22 @@ export default function App() {
   }
   async function sairAdmin() { await supabase?.auth.signOut(); setUsuarioAdmin(false); }
 
+  async function excluirAtividade(atividade: ActivityRecord) {
+    if (!supabase || !usuarioAdmin) return;
+    const confirmar = window.confirm('Deseja realmente excluir a atividade "' + atividade.title + '"? Esta ação não pode ser desfeita.');
+    if (!confirmar) return;
+    setMensagemAdmin('');
+    setSalvandoItem(true);
+    const { error } = await supabase.from('activities').delete().eq('id', atividade.id);
+    if (error) {
+      setMensagemAdmin('Não foi possível excluir a atividade: ' + error.message);
+    } else {
+      setAtividadesBanco((atuais) => atuais.filter((item) => item.id !== atividade.id));
+      setMensagemAdmin('Atividade excluída com sucesso.');
+    }
+    setSalvandoItem(false);
+  }
+
   async function cadastrarAtividade(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMensagemAdmin('');
@@ -309,6 +325,7 @@ export default function App() {
                 <span className="subcard-kicker">ATRIBUIÇÃO {String(index + 1).padStart(2, '0')}</span>
                 <h3>{item}</h3>
                 <p>{(setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor?.find((atividade) => atividade.title === item)?.description || 'Atividade vinculada ao setor de ' + setorAtual.nome + '.'}</p>
+                {usuarioAdmin && (setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor?.find((atividade) => atividade.title === item) && <button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirAtividade((setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor!.find((atividade) => atividade.title === item)!)}>Excluir atividade</button>}
               </article>
             ))}
           </div>
