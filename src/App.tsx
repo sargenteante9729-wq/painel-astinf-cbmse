@@ -1,5 +1,6 @@
 
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react';
+import { supabase, supabaseConfigured } from './lib/supabase';
 
 const setores = [
   {
@@ -44,10 +45,20 @@ const setores = [
   },
 ];
 
+type SectorRecord = { id: string; name: string; description: string; purpose: string; display_order: number; is_active: boolean };
+
 export default function App() {
   const [abertura, setAbertura] = useState(true);
   const [selecionado, setSelecionado] = useState<string | null>(null);
   const [abaDetalhes, setAbaDetalhes] = useState<'visao' | 'atribuicoes'>('visao');
+  const [loginAberto, setLoginAberto] = useState(false);
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [loginErro, setLoginErro] = useState('');
+  const [loginCarregando, setLoginCarregando] = useState(false);
+  const [usuarioAdmin, setUsuarioAdmin] = useState(false);
+  const [setoresBanco, setSetoresBanco] = useState<SectorRecord[]>([]);
+  const [statusConexao, setStatusConexao] = useState('Verificando conexão com o banco…');
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -60,7 +71,40 @@ export default function App() {
     }
   }, [abertura]);
 
-  const setorAtual = setores.find((setor) => setor.nome === selecionado);
+  useEffect(() => {
+    if (!supabase) { setStatusConexao('Conexão Supabase não configurada.'); return; }
+    let ativo = true;
+    supabase.from('sectors').select('id,name,description,purpose,display_order,is_active').eq('is_active', true).order('display_order').then(({ data, error }) => {
+      if (!ativo) return;
+      if (error) setStatusConexao('Falha na leitura de sectors: ' + error.message);
+      else { setSetoresBanco((data || []) as SectorRecord[]); setStatusConexao('Conexão ativa · ' + (data?.length || 0) + ' setores lidos do Supabase.'); }
+    });
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!ativo || !data.session?.user) return;
+      const { data: papel } = await supabase!.from('user_roles').select('role').eq('user_id', data.session.user.id).maybeSingle();
+      if (ativo && papel?.role === 'admin') setUsuarioAdmin(true);
+    });
+    return () => { ativo = false; };
+  }, []);
+
+  const setoresExibidos = setoresBanco.length ? setoresBanco.map((registro) => {
+    const local = setores.find((item) => item.nome.toLowerCase() === registro.name.toLowerCase());
+    return { nome: registro.name, descricao: registro.description || local?.descricao || '', imagem: local?.imagem || setores[0].imagem, cor: local?.cor || '#58a6ff', atribuicoes: local?.atribuicoes || 0, detalhes: local?.detalhes || [], id: registro.id };
+  }) : setores;
+  const setorAtual = setoresExibidos.find((setor) => setor.nome === selecionado);
+
+  async function entrarAdmin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setLoginErro('');
+    if (!supabase) { setLoginErro('A conexão ainda não está configurada.'); return; }
+    setLoginCarregando(true);
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: senha });
+    if (error || !data.user) { setLoginErro('Não foi possível entrar. Confira o e-mail e a senha.'); setLoginCarregando(false); return; }
+    const { data: papel, error: erroPapel } = await supabase.from('user_roles').select('role').eq('user_id', data.user.id).maybeSingle();
+    if (erroPapel || papel?.role !== 'admin') { await supabase.auth.signOut(); setLoginErro('Este usuário não possui autorização administrativa.'); setLoginCarregando(false); return; }
+    setUsuarioAdmin(true); setLoginAberto(false); setSenha(''); setLoginCarregando(false);
+  }
+  async function sairAdmin() { await supabase?.auth.signOut(); setUsuarioAdmin(false); }
+
 
   return (
     <div className="dashboard">
