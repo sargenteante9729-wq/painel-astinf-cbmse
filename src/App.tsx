@@ -184,7 +184,7 @@ export default function App() {
               className="back-to-sectors"
               onClick={() => setSelecionado(null)}
             >
-              ← Voltar aos cinco cards
+              ← Voltar cards
             </button>
             <div className="detail-sector-identity">
               <span className="detail-symbol" style={{ color: setorAtual.cor }}>◈</span>
