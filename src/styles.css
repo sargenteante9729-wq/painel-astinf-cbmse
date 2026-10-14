@@ -301,3 +301,8 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
 .team-member-list strong { color: #f0f6f9; font-size: 13px; }
 .team-member-list span { color: #9eb7c4; font-size: 12px; }
 @media (max-width: 650px) { .admin-record { align-items: flex-start; } }
+
+.development-systems-list { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 9px; }
+.development-systems-list li { display: flex; flex-direction: column; gap: 5px; padding: 12px 13px; border: 1px solid #294752; border-left: 3px solid #e62337; border-radius: 7px; background: #081820; }
+.development-systems-list strong { color: #f2f7fa; font-size: 13px; }
+.development-systems-list span { color: #a9bec8; font-size: 12px; line-height: 1.5; }
