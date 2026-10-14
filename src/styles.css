@@ -283,3 +283,10 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
 .activity-delete-button { display: inline-flex; align-items: center; justify-content: center; margin-top: 12px; border: 1px solid #ff6574; border-radius: 7px; padding: 8px 11px; color: #ff9da7; background: #3a1118; font-size: 12px; font-weight: 750; cursor: pointer; }
 .activity-delete-button:hover { color: #fff; background: #a91122; }
 .activity-delete-button:disabled { opacity: .55; cursor: wait; }
+
+
+.topbar { position: relative; }
+.header-admin-hotspot { position: absolute; z-index: 2; top: 31%; right: 1.5%; width: 17%; height: 40%; border: 0; border-radius: 12px; padding: 0; background: transparent; cursor: pointer; }
+.header-admin-hotspot:focus-visible { outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 6px #e51d32; }
+.header-admin-hotspot:hover { background: #ffffff0a; }
+@media (max-width: 650px) { .header-admin-hotspot { top: 31%; right: 1.5%; width: 18%; height: 40%; border-radius: 6px; } }
