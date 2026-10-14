@@ -47,6 +47,7 @@ const setores = [
 export default function App() {
   const [abertura, setAbertura] = useState(true);
   const [selecionado, setSelecionado] = useState('ADM');
+  const [abaDetalhes, setAbaDetalhes] = useState<'visao' | 'atribuicoes'>('visao');
   const [busca, setBusca] = useState('');
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -182,30 +183,50 @@ export default function App() {
             </div>
           </div>
 
-          <div className="detail-tabs">
-            <span className="active-tab">Visão geral</span>
-            <span>Atribuições <b>{setorAtual.atribuicoes}</b></span>
+          <div className="detail-tabs" role="tablist" aria-label="Informações do setor">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={abaDetalhes === 'visao'}
+              className={abaDetalhes === 'visao' ? 'active-tab' : ''}
+              onClick={() => setAbaDetalhes('visao')}
+            >
+              Visão geral
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={abaDetalhes === 'atribuicoes'}
+              className={abaDetalhes === 'atribuicoes' ? 'active-tab' : ''}
+              onClick={() => setAbaDetalhes('atribuicoes')}
+            >
+              Atribuições <b>{setorAtual.atribuicoes}</b>
+            </button>
           </div>
 
           <div className="detail-columns">
-            <section>
-              <h3>♙ &nbsp; EQUIPE E RESPONSÁVEIS</h3>
-              <div className="empty-panel">
-                Os nomes e responsáveis serão cadastrados após a
-                validação da estrutura oficial do setor.
-              </div>
-            </section>
-            <section>
-              <h3>☷ &nbsp; ATRIBUIÇÕES DO SETOR</h3>
-              <div className="assignment-list">
-                {setorAtual.detalhes.map((item, index) => (
-                  <div className="assignment" key={item}>
-                    <span>{String(index + 1).padStart(2, '0')}</span>
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </section>
+            {abaDetalhes === 'visao' && (
+              <section className="detail-panel-full">
+                <h3>♙ &nbsp; EQUIPE E RESPONSÁVEIS</h3>
+                <div className="empty-panel">
+                  Os nomes e responsáveis serão cadastrados após a
+                  validação da estrutura oficial do setor.
+                </div>
+              </section>
+            )}
+            {abaDetalhes === 'atribuicoes' && (
+              <section className="detail-panel-full">
+                <h3>☷ &nbsp; ATRIBUIÇÕES DO SETOR</h3>
+                <div className="assignment-list">
+                  {setorAtual.detalhes.map((item, index) => (
+                    <div className="assignment" key={item}>
+                      <span>{String(index + 1).padStart(2, '0')}</span>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         </section>
 
