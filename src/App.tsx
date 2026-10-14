@@ -198,50 +198,66 @@ export default function App() {
             </div>
           </div>
 
-          <div className="detail-tabs" role="tablist" aria-label="Informações do setor">
+          <div className="detail-option-cards" role="tablist" aria-label="Informações do setor">
             <button
               type="button"
               role="tab"
               aria-selected={abaDetalhes === 'visao'}
-              className={abaDetalhes === 'visao' ? 'active-tab' : ''}
+              className={`detail-option-card ${abaDetalhes === 'visao' ? 'active' : ''}`}
               onClick={() => setAbaDetalhes('visao')}
             >
-              Visão geral
+              <span className="option-icon">◉</span>
+              <span className="option-copy">
+                <strong>Visão geral</strong>
+                <small>Resumo, finalidade e responsáveis do setor</small>
+              </span>
+              <span className="option-arrow">→</span>
             </button>
             <button
               type="button"
               role="tab"
               aria-selected={abaDetalhes === 'atribuicoes'}
-              className={abaDetalhes === 'atribuicoes' ? 'active-tab' : ''}
+              className={`detail-option-card ${abaDetalhes === 'atribuicoes' ? 'active' : ''}`}
               onClick={() => setAbaDetalhes('atribuicoes')}
             >
-              Atribuições <b>{setorAtual.atribuicoes}</b>
+              <span className="option-icon">☷</span>
+              <span className="option-copy">
+                <strong>Atribuições</strong>
+                <small>{setorAtual.detalhes.length} itens cadastrados para este setor</small>
+              </span>
+              <span className="option-count">{setorAtual.detalhes.length}</span>
+              <span className="option-arrow">→</span>
             </button>
           </div>
 
-          <div className="detail-columns">
+          <div className="detail-subcards">
             {abaDetalhes === 'visao' && (
-              <section className="detail-panel-full">
-                <h3>♙ &nbsp; EQUIPE E RESPONSÁVEIS</h3>
-                <div className="empty-panel">
-                  Os nomes e responsáveis serão cadastrados após a
-                  validação da estrutura oficial do setor.
-                </div>
-              </section>
+              <>
+                <article className="detail-subcard">
+                  <span className="subcard-kicker">SETOR / ASTINF</span>
+                  <h3>Sobre o setor</h3>
+                  <p>{setorAtual.descricao}. Esta área reúne as informações e atividades relacionadas a {setorAtual.nome}.</p>
+                </article>
+                <article className="detail-subcard">
+                  <span className="subcard-kicker">EQUIPE</span>
+                  <h3>Responsáveis e equipe</h3>
+                  <p>Os nomes dos responsáveis e integrantes serão incluídos após a validação da estrutura oficial do setor.</p>
+                </article>
+                <article className="detail-subcard">
+                  <span className="subcard-kicker">ATRIBUIÇÕES</span>
+                  <h3>Atividades cadastradas</h3>
+                  <p>{setorAtual.detalhes.length} atividades descritas para este setor.</p>
+                  <button type="button" className="subcard-action" onClick={() => setAbaDetalhes('atribuicoes')}>Ver atribuições →</button>
+                </article>
+              </>
             )}
-            {abaDetalhes === 'atribuicoes' && (
-              <section className="detail-panel-full">
-                <h3>☷ &nbsp; ATRIBUIÇÕES DO SETOR</h3>
-                <div className="assignment-list">
-                  {setorAtual.detalhes.map((item, index) => (
-                    <div className="assignment" key={item}>
-                      <span>{String(index + 1).padStart(2, '0')}</span>
-                      {item}
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+            {abaDetalhes === 'atribuicoes' && setorAtual.detalhes.map((item, index) => (
+              <article className="detail-subcard assignment-subcard" key={item}>
+                <span className="subcard-kicker">ATRIBUIÇÃO {String(index + 1).padStart(2, '0')}</span>
+                <h3>{item}</h3>
+                <p>Atividade vinculada ao setor de {setorAtual.nome}.</p>
+              </article>
+            ))}
           </div>
         </section>
         )}
