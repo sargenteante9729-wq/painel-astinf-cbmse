@@ -102,7 +102,10 @@ export default function App() {
       <header className="topbar">
         <div className="brand">
           <img className="brand-logo" src={`${import.meta.env.BASE_URL}1.png`} alt="Logo ASTINF CBMSE" />
-          <div className="brand-mission">TECNOLOGIA A SERVIÇO DA MISSÃO FIM</div>
+          <div className="brand-copy">
+            <div className="brand-mission">TECNOLOGIA A SERVIÇO DA MISSÃO FIM</div>
+            <div className="brand-subtitle">CORPO DE BOMBEIROS MILITAR DO ESTADO DE SERGIPE</div>
+          </div>
         </div>
         <span className="topbar-label">PAINEL DE GESTÃO</span>
       </header>
