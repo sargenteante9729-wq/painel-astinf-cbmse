@@ -107,6 +107,10 @@ button { -webkit-tap-highlight-color: transparent; }
 .detail-heading h2 { margin: 0; color: #f4f7f9; font-size: 20px; }
 .detail-heading p { margin: 5px 0 0; color: #8b98a2; font-size: 11px; }
 .sector-tag { padding: 7px 10px; border-radius: 5px; color: #61d8eb; background: #11272d; font-size: 10px; white-space: nowrap; }
+.detail-heading { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.back-to-sectors { padding: 9px 13px; border: 1px solid #38434a; border-radius: 6px; background: #171e22; color: #dbe3e8; font: inherit; font-size: 11px; cursor: pointer; }
+.back-to-sectors:hover { border-color: #ff4a4a; color: #fff; }
+.detail-sector-identity { display: flex; align-items: center; gap: 12px; }
 .detail-tabs { display: flex; align-items: center; gap: 24px; margin-top: 24px; border-bottom: 1px solid #2b3338; color: #9aa6ae; font-size: 11px; }
 .detail-tabs > button { position: relative; padding: 0 0 13px; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
 .detail-tabs > button:hover { color: #e8edf0; }
