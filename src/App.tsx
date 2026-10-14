@@ -74,6 +74,9 @@ export default function App() {
   const [atividadeSetor, setAtividadeSetor] = useState('');
   const [atividadeTitulo, setAtividadeTitulo] = useState('');
   const [atividadeDescricao, setAtividadeDescricao] = useState('');
+  const [atividadeEditando, setAtividadeEditando] = useState<string | null>(null);
+  const [sistemaEditando, setSistemaEditando] = useState<string | null>(null);
+  const [membroEditando, setMembroEditando] = useState<string | null>(null);
   const [mensagemAdmin, setMensagemAdmin] = useState('');
   const [salvandoItem, setSalvandoItem] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -126,6 +129,10 @@ export default function App() {
   }
   async function sairAdmin() { await supabase?.auth.signOut(); setUsuarioAdmin(false); }
 
+  function editarAtividade(atividade: ActivityRecord) {
+    setAdminSecao('atividades'); setAtividadeEditando(atividade.id); setAtividadeSetor(atividade.sector_id); setAtividadeTitulo(atividade.title); setAtividadeDescricao(atividade.description || ''); setMensagemAdmin('Editando atividade: ' + atividade.title);
+  }
+
   async function excluirAtividade(atividade: ActivityRecord) {
     if (!supabase || !usuarioAdmin) return;
     const confirmar = window.confirm('Deseja realmente excluir a atividade "' + atividade.title + '"? Esta ação não pode ser desfeita.');
@@ -147,12 +154,16 @@ export default function App() {
     const { data, error } = await supabase.from('systems').select('id,name,description,is_active').eq('is_active', true).order('name');
     if (!error && data) setSistemasBanco(data as SystemRecord[]);
   }
+  function editarSistema(sistema: SystemRecord) {
+    setAdminSecao('sistemas'); setSistemaEditando(sistema.id); setSistemaNome(sistema.name); setSistemaDescricao(sistema.description || ''); setMensagemAdmin('Editando sistema: ' + sistema.name);
+  }
   async function cadastrarSistema(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (!supabase || !usuarioAdmin) return;
     setSalvandoItem(true); setMensagemAdmin('');
-    const { error } = await supabase.from('systems').insert({ name: sistemaNome.trim(), description: sistemaDescricao.trim(), is_active: true });
-    if (error) setMensagemAdmin('Não foi possível cadastrar o sistema: ' + error.message);
-    else { setMensagemAdmin('Sistema cadastrado com sucesso.'); setSistemaNome(''); setSistemaDescricao(''); await recarregarSistemas(); }
+    const dados = { name: sistemaNome.trim(), description: sistemaDescricao.trim(), is_active: true };
+    const { error } = sistemaEditando ? await supabase.from('systems').update(dados).eq('id', sistemaEditando) : await supabase.from('systems').insert(dados);
+    if (error) setMensagemAdmin('Não foi possível salvar o sistema: ' + error.message);
+    else { setMensagemAdmin(sistemaEditando ? 'Sistema alterado com sucesso.' : 'Sistema cadastrado com sucesso.'); setSistemaNome(''); setSistemaDescricao(''); setSistemaEditando(null); await recarregarSistemas(); }
     setSalvandoItem(false);
   }
   async function excluirSistema(sistema: SystemRecord) {
@@ -167,12 +178,16 @@ export default function App() {
     const { data, error } = await supabase.from('team_members').select('id,sector_id,display_name,role_title,is_active').eq('is_active', true).order('display_name');
     if (!error && data) setEquipeBanco(data as TeamRecord[]);
   }
+  function editarMembro(membro: TeamRecord) {
+    setAdminSecao('equipe'); setMembroEditando(membro.id); setMembroSetor(membro.sector_id); setMembroNome(membro.display_name); setMembroFuncao(membro.role_title || ''); setMensagemAdmin('Editando integrante: ' + membro.display_name);
+  }
   async function cadastrarMembro(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (!supabase || !usuarioAdmin) return;
     setSalvandoItem(true); setMensagemAdmin('');
-    const { error } = await supabase.from('team_members').insert({ sector_id: membroSetor, display_name: membroNome.trim(), role_title: membroFuncao.trim(), is_active: true });
-    if (error) setMensagemAdmin('Não foi possível cadastrar o integrante: ' + error.message);
-    else { setMensagemAdmin('Integrante cadastrado com sucesso.'); setMembroNome(''); setMembroFuncao(''); await recarregarEquipe(); }
+    const dados = { sector_id: membroSetor, display_name: membroNome.trim(), role_title: membroFuncao.trim(), is_active: true };
+    const { error } = membroEditando ? await supabase.from('team_members').update(dados).eq('id', membroEditando) : await supabase.from('team_members').insert(dados);
+    if (error) setMensagemAdmin('Não foi possível salvar o integrante: ' + error.message);
+    else { setMensagemAdmin(membroEditando ? 'Integrante alterado com sucesso.' : 'Integrante cadastrado com sucesso.'); setMembroNome(''); setMembroFuncao(''); setMembroSetor(''); setMembroEditando(null); await recarregarEquipe(); }
     setSalvandoItem(false);
   }
   async function excluirMembro(membro: TeamRecord) {
@@ -188,20 +203,17 @@ export default function App() {
     setMensagemAdmin('');
     if (!supabase || !usuarioAdmin) return;
     setSalvandoItem(true);
-    const { error } = await supabase.from('activities').insert({
-      sector_id: atividadeSetor,
-      title: atividadeTitulo.trim(),
-      description: atividadeDescricao.trim(),
-      status: 'active',
-      display_order: 0,
-    });
+    const dados = { sector_id: atividadeSetor, title: atividadeTitulo.trim(), description: atividadeDescricao.trim(), status: 'active' as const, display_order: 0 };
+    const { error } = atividadeEditando ? await supabase.from('activities').update(dados).eq('id', atividadeEditando) : await supabase.from('activities').insert(dados);
     if (error) setMensagemAdmin('Não foi possível cadastrar: ' + error.message);
     else {
-      setMensagemAdmin('Atividade cadastrada com sucesso. Ela já foi adicionada ao painel.');
+      setMensagemAdmin(atividadeEditando ? 'Atividade alterada com sucesso.' : 'Atividade cadastrada com sucesso. Ela já foi adicionada ao painel.');
       const { data: atualizadas } = await supabase.from('activities').select('id,sector_id,title,description,status,display_order').eq('status', 'active').order('display_order');
       if (atualizadas) setAtividadesBanco(atualizadas as ActivityRecord[]);
       setAtividadeTitulo('');
       setAtividadeDescricao('');
+      setAtividadeSetor('');
+      setAtividadeEditando(null);
     }
     setSalvandoItem(false);
   }
@@ -273,16 +285,16 @@ export default function App() {
               <label>Nome da atividade<input value={atividadeTitulo} onChange={(event) => setAtividadeTitulo(event.target.value)} required maxLength={160} placeholder="Ex.: Fiscalização de contratos" /></label>
               <label>Descrição<textarea value={atividadeDescricao} onChange={(event) => setAtividadeDescricao(event.target.value)} rows={3} placeholder="Descreva a atribuição ou atividade" /></label>
               {mensagemAdmin && <p className={mensagemAdmin.includes('sucesso') ? 'admin-success' : 'admin-login-error'} role="status">{mensagemAdmin}</p>}
-              <button type="submit" disabled={salvandoItem || setoresBanco.length === 0}>{salvandoItem ? 'Salvando…' : 'Cadastrar atividade'}</button>
+              <div className="admin-form-actions"><button type="submit" disabled={salvandoItem || setoresBanco.length === 0}>{salvandoItem ? 'Salvando…' : atividadeEditando ? 'Salvar alterações' : 'Cadastrar atividade'}</button>{atividadeEditando && <button type="button" className="admin-cancel-edit" onClick={() => { setAtividadeEditando(null); setAtividadeSetor(''); setAtividadeTitulo(''); setAtividadeDescricao(''); setMensagemAdmin('Edição cancelada.'); }}>Cancelar edição</button>}</div>
             </form>}
             {adminSecao === 'sistemas' && <>
               <form className="admin-content-form" onSubmit={cadastrarSistema}>
                 <label>Nome do sistema<input value={sistemaNome} onChange={(event) => setSistemaNome(event.target.value)} required maxLength={120} placeholder="Ex.: Sistema de Boletins" /></label>
                 <label>Descrição<input value={sistemaDescricao} onChange={(event) => setSistemaDescricao(event.target.value)} placeholder="Finalidade do sistema" /></label>
                 {mensagemAdmin && <p className={mensagemAdmin.includes('sucesso') || mensagemAdmin.includes('excluído') ? 'admin-success' : 'admin-login-error'} role="status">{mensagemAdmin}</p>}
-                <button type="submit" disabled={salvandoItem}>{salvandoItem ? 'Salvando…' : 'Cadastrar sistema'}</button>
+                <div className="admin-form-actions"><button type="submit" disabled={salvandoItem}>{salvandoItem ? 'Salvando…' : sistemaEditando ? 'Salvar alterações' : 'Cadastrar sistema'}</button>{sistemaEditando && <button type="button" className="admin-cancel-edit" onClick={() => { setSistemaEditando(null); setSistemaNome(''); setSistemaDescricao(''); setMensagemAdmin('Edição cancelada.'); }}>Cancelar edição</button>}</div>
               </form>
-              <div className="admin-record-list">{sistemasBanco.map((sistema) => <article className="admin-record" key={sistema.id}><div><strong>{sistema.name}</strong><p>{sistema.description || 'Sem descrição.'}</p></div><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirSistema(sistema)}>Excluir</button></article>)}{sistemasBanco.length === 0 && <p className="connection-note">Nenhum sistema cadastrado.</p>}</div>
+              <div className="admin-record-list">{sistemasBanco.map((sistema) => <article className="admin-record" key={sistema.id}><div><strong>{sistema.name}</strong><p>{sistema.description || 'Sem descrição.'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarSistema(sistema)}>Editar</button><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirSistema(sistema)}>Excluir</button></div></article>)}{sistemasBanco.length === 0 && <p className="connection-note">Nenhum sistema cadastrado.</p>}</div>
             </>}
             {adminSecao === 'equipe' && <>
               <form className="admin-content-form" onSubmit={cadastrarMembro}>
@@ -290,9 +302,9 @@ export default function App() {
                 <label>Nome do integrante<input value={membroNome} onChange={(event) => setMembroNome(event.target.value)} required maxLength={140} placeholder="Nome completo" /></label>
                 <label>Função / cargo<input value={membroFuncao} onChange={(event) => setMembroFuncao(event.target.value)} maxLength={140} placeholder="Ex.: Chefe do setor" /></label>
                 {mensagemAdmin && <p className={mensagemAdmin.includes('sucesso') || mensagemAdmin.includes('excluído') ? 'admin-success' : 'admin-login-error'} role="status">{mensagemAdmin}</p>}
-                <button type="submit" disabled={salvandoItem || setoresBanco.length === 0}>{salvandoItem ? 'Salvando…' : 'Cadastrar integrante'}</button>
+                <div className="admin-form-actions"><button type="submit" disabled={salvandoItem || setoresBanco.length === 0}>{salvandoItem ? 'Salvando…' : membroEditando ? 'Salvar alterações' : 'Cadastrar integrante'}</button>{membroEditando && <button type="button" className="admin-cancel-edit" onClick={() => { setMembroEditando(null); setMembroSetor(''); setMembroNome(''); setMembroFuncao(''); setMensagemAdmin('Edição cancelada.'); }}>Cancelar edição</button>}</div>
               </form>
-              <div className="admin-record-list">{equipeBanco.map((membro) => <article className="admin-record" key={membro.id}><div><strong>{membro.display_name}</strong><p>{membro.role_title || 'Sem função informada'} · {setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || 'Setor'}</p></div><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirMembro(membro)}>Excluir</button></article>)}{equipeBanco.length === 0 && <p className="connection-note">Nenhum integrante cadastrado.</p>}</div>
+              <div className="admin-record-list">{equipeBanco.map((membro) => <article className="admin-record" key={membro.id}><div><strong>{membro.display_name}</strong><p>{membro.role_title || 'Sem função informada'} · {setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || 'Setor'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarMembro(membro)}>Editar</button><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirMembro(membro)}>Excluir</button></div></article>)}{equipeBanco.length === 0 && <p className="connection-note">Nenhum integrante cadastrado.</p>}</div>
             </>}
           </section>}
 
@@ -409,7 +421,7 @@ export default function App() {
                 <span className="subcard-kicker">ATRIBUIÇÃO {String(index + 1).padStart(2, '0')}</span>
                 <h3>{item}</h3>
                 <p>{(setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor?.find((atividade) => atividade.title === item)?.description || 'Atividade vinculada ao setor de ' + setorAtual.nome + '.'}</p>
-                {usuarioAdmin && (setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor?.find((atividade) => atividade.title === item) && <button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirAtividade((setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor!.find((atividade) => atividade.title === item)!)}>Excluir atividade</button>}
+                {usuarioAdmin && (setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor?.find((atividade) => atividade.title === item) && <div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarAtividade((setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor!.find((atividade) => atividade.title === item)!)}>Editar</button><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirAtividade((setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor!.find((atividade) => atividade.title === item)!)}>Excluir atividade</button></div>}
               </article>
             ))}
           </div>
