@@ -239,3 +239,25 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
   .sector-tag { font-size: 9px; }
   .footer { flex-direction: column; }
 }
+
+
+/* Área administrativa e diagnóstico da conexão Supabase */
+.admin-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.admin-entry { border: 1px solid #ff3547; border-radius: 8px; padding: 11px 15px; color: #fff; background: #a91122; cursor: pointer; font-weight: 750; }
+.admin-entry:hover { background: #d91f34; }
+.admin-connected { color: #7ee8b4; font-size: 12px; font-weight: 700; }
+.connection-note { margin: 0 0 14px; color: #9eb7c4; font-size: 12px; }
+.admin-modal-backdrop { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; padding: 20px; background: #020609d9; backdrop-filter: blur(8px); }
+.admin-modal { position: relative; width: min(100%, 440px); padding: 30px; border: 1px solid #284651; border-radius: 16px; background: linear-gradient(145deg, #10232d, #071117); box-shadow: 0 24px 90px #0009; }
+.admin-modal h2 { margin: 10px 0; color: #fff; font-size: 25px; }
+.admin-modal > p { margin: 0 0 22px; color: #b4c5ce; line-height: 1.5; }
+.admin-modal-kicker { color: #ff6574; font-size: 10px; font-weight: 800; letter-spacing: 1.7px; }
+.admin-modal-close { position: absolute; top: 12px; right: 14px; border: 0; background: transparent; color: #c7d5dc; font-size: 27px; cursor: pointer; }
+.admin-login-form { display: grid; gap: 16px; }
+.admin-login-form label { display: grid; gap: 7px; color: #dce7ec; font-size: 13px; font-weight: 650; }
+.admin-login-form input { width: 100%; padding: 12px 13px; border: 1px solid #34505c; border-radius: 8px; background: #07141b; color: #fff; outline: none; }
+.admin-login-form input:focus { border-color: #ff5365; box-shadow: 0 0 0 3px #ff354722; }
+.admin-login-form button { border: 0; border-radius: 8px; padding: 13px; color: #fff; background: linear-gradient(100deg, #e62337, #a80d20); font-weight: 800; cursor: pointer; }
+.admin-login-form button:disabled { opacity: .65; cursor: wait; }
+.admin-login-error { margin: 0; color: #ff9da7; font-size: 13px; line-height: 1.45; }
+@media (max-width: 650px) { .section-title { align-items: flex-start; flex-direction: column; } .admin-modal { padding: 24px 20px; } }
