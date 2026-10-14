@@ -47,6 +47,8 @@ const setores = [
 
 type SectorRecord = { id: string; name: string; description: string; purpose: string; display_order: number; is_active: boolean };
 type ActivityRecord = { id: string; sector_id: string; title: string; description: string; status: 'active' | 'inactive'; display_order: number };
+type SystemRecord = { id: string; name: string; description: string; is_active: boolean };
+type TeamRecord = { id: string; sector_id: string; display_name: string; role_title: string; is_active: boolean };
 
 export default function App() {
   const [abertura, setAbertura] = useState(true);
@@ -60,6 +62,13 @@ export default function App() {
   const [usuarioAdmin, setUsuarioAdmin] = useState(false);
   const [setoresBanco, setSetoresBanco] = useState<SectorRecord[]>([]);
   const [atividadesBanco, setAtividadesBanco] = useState<ActivityRecord[]>([]);
+  const [sistemasBanco, setSistemasBanco] = useState<SystemRecord[]>([]);
+  const [equipeBanco, setEquipeBanco] = useState<TeamRecord[]>([]);
+  const [sistemaNome, setSistemaNome] = useState('');
+  const [sistemaDescricao, setSistemaDescricao] = useState('');
+  const [membroSetor, setMembroSetor] = useState('');
+  const [membroNome, setMembroNome] = useState('');
+  const [membroFuncao, setMembroFuncao] = useState('');
   const [statusConexao, setStatusConexao] = useState('Verificando conexão com o banco…');
   const [adminSecao, setAdminSecao] = useState<'atividades' | 'sistemas' | 'equipe'>('atividades');
   const [atividadeSetor, setAtividadeSetor] = useState('');
@@ -88,6 +97,8 @@ export default function App() {
       else { setSetoresBanco((data || []) as SectorRecord[]); setStatusConexao('Conexão ativa · ' + (data?.length || 0) + ' setores lidos do Supabase.'); }
     });
     supabase.from('activities').select('id,sector_id,title,description,status,display_order').eq('status', 'active').order('display_order').then(({ data, error }) => { if (ativo && !error && data) setAtividadesBanco(data as ActivityRecord[]); });
+    supabase.from('systems').select('id,name,description,is_active').eq('is_active', true).order('name').then(({ data, error }) => { if (ativo && !error && data) setSistemasBanco(data as SystemRecord[]); });
+    supabase.from('team_members').select('id,sector_id,display_name,role_title,is_active').eq('is_active', true).order('display_name').then(({ data, error }) => { if (ativo && !error && data) setEquipeBanco(data as TeamRecord[]); });
     supabase.auth.getSession().then(async ({ data }) => {
       if (!ativo || !data.session?.user) return;
       const { data: papel } = await supabase!.from('user_roles').select('role').eq('user_id', data.session.user.id).maybeSingle();
@@ -128,6 +139,47 @@ export default function App() {
       setAtividadesBanco((atuais) => atuais.filter((item) => item.id !== atividade.id));
       setMensagemAdmin('Atividade excluída com sucesso.');
     }
+    setSalvandoItem(false);
+  }
+
+  async function recarregarSistemas() {
+    if (!supabase) return;
+    const { data, error } = await supabase.from('systems').select('id,name,description,is_active').eq('is_active', true).order('name');
+    if (!error && data) setSistemasBanco(data as SystemRecord[]);
+  }
+  async function cadastrarSistema(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); if (!supabase || !usuarioAdmin) return;
+    setSalvandoItem(true); setMensagemAdmin('');
+    const { error } = await supabase.from('systems').insert({ name: sistemaNome.trim(), description: sistemaDescricao.trim(), is_active: true });
+    if (error) setMensagemAdmin('Não foi possível cadastrar o sistema: ' + error.message);
+    else { setMensagemAdmin('Sistema cadastrado com sucesso.'); setSistemaNome(''); setSistemaDescricao(''); await recarregarSistemas(); }
+    setSalvandoItem(false);
+  }
+  async function excluirSistema(sistema: SystemRecord) {
+    if (!supabase || !usuarioAdmin || !window.confirm('Excluir o sistema ' + sistema.name + '?')) return;
+    setSalvandoItem(true); setMensagemAdmin('');
+    const { error } = await supabase.from('systems').delete().eq('id', sistema.id);
+    if (error) setMensagemAdmin('Não foi possível excluir o sistema: ' + error.message); else { setMensagemAdmin('Sistema excluído.'); await recarregarSistemas(); }
+    setSalvandoItem(false);
+  }
+  async function recarregarEquipe() {
+    if (!supabase) return;
+    const { data, error } = await supabase.from('team_members').select('id,sector_id,display_name,role_title,is_active').eq('is_active', true).order('display_name');
+    if (!error && data) setEquipeBanco(data as TeamRecord[]);
+  }
+  async function cadastrarMembro(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); if (!supabase || !usuarioAdmin) return;
+    setSalvandoItem(true); setMensagemAdmin('');
+    const { error } = await supabase.from('team_members').insert({ sector_id: membroSetor, display_name: membroNome.trim(), role_title: membroFuncao.trim(), is_active: true });
+    if (error) setMensagemAdmin('Não foi possível cadastrar o integrante: ' + error.message);
+    else { setMensagemAdmin('Integrante cadastrado com sucesso.'); setMembroNome(''); setMembroFuncao(''); await recarregarEquipe(); }
+    setSalvandoItem(false);
+  }
+  async function excluirMembro(membro: TeamRecord) {
+    if (!supabase || !usuarioAdmin || !window.confirm('Excluir ' + membro.display_name + ' da equipe?')) return;
+    setSalvandoItem(true); setMensagemAdmin('');
+    const { error } = await supabase.from('team_members').delete().eq('id', membro.id);
+    if (error) setMensagemAdmin('Não foi possível excluir o integrante: ' + error.message); else { setMensagemAdmin('Integrante excluído.'); await recarregarEquipe(); }
     setSalvandoItem(false);
   }
 
