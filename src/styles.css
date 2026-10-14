@@ -61,7 +61,9 @@ button { -webkit-tap-highlight-color: transparent; }
 
 .brand { display: flex; align-items: center; gap: 28px; min-width: 0; }
 .brand-logo { display: block; width: 250px; height: auto; max-height: 92px; object-fit: contain; flex: 0 1 250px; }
-.brand-mission { color: #f6f8fa; font-size: clamp(15px, 1.55vw, 22px); font-weight: 800; letter-spacing: 1.15px; line-height: 1.5; padding-left: 34px; border-left: 1px solid #4c6570; }
+.brand-copy { padding-left: 34px; border-left: 1px solid #4c6570; display: flex; flex-direction: column; justify-content: center; gap: 8px; min-width: 0; }
+.brand-mission { color: #f6f8fa; font-size: clamp(15px, 1.55vw, 22px); font-weight: 800; letter-spacing: 1.15px; line-height: 1.3; }
+.brand-subtitle { color: #d8e6ed; font-size: clamp(9px, .82vw, 12px); letter-spacing: 3px; line-height: 1.5; white-space: nowrap; }
 .topbar-label {
   border: 1px solid #ff3547;
   border-radius: 8px;
@@ -202,7 +204,9 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
   .topbar { min-height: 108px; padding: 14px 18px; }
   .brand-logo { width: 180px; max-height: 60px; flex-basis: 180px; }
   .brand { gap: 12px; }
-  .brand-mission { font-size: 9px; letter-spacing: .6px; max-width: 180px; padding-left: 12px; }
+  .brand-copy { padding-left: 12px; gap: 4px; }
+  .brand-mission { font-size: 9px; letter-spacing: .6px; max-width: 180px; }
+  .brand-subtitle { font-size: 6px; letter-spacing: 1px; white-space: normal; }
   .topbar-label { font-size: 8px; padding: 7px; letter-spacing: .4px; }
   .main-content { padding: 0 16px; }
   .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 14px 0; }
