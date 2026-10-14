@@ -394,6 +394,14 @@ export default function App() {
                   <p>{setorAtual.detalhes.length} atividades cadastradas para este setor.</p>
                   <button type="button" className="subcard-action" onClick={() => setAbaDetalhes('atribuicoes')}>Ver atribuições →</button>
                 </article>
+                {setorAtual.nome.toLowerCase() === 'desenvolvimento' && <article className="detail-subcard development-systems-subcard">
+                  <span className="subcard-kicker">CATÁLOGO DE TI</span>
+                  <h3>Sistemas</h3>
+                  <p>Sistemas cadastrados para desenvolvimento e sustentação pela ASTINF.</p>
+                  {sistemasBanco.length > 0
+                    ? <ul className="development-systems-list">{sistemasBanco.map((sistema) => <li key={sistema.id}><strong>{sistema.name}</strong>{sistema.description && <span>{sistema.description}</span>}</li>)}</ul>
+                    : <p className="connection-note">Nenhum sistema cadastrado.</p>}
+                </article>}
               </>
             )}
             {abaDetalhes === 'atribuicoes' && setorAtual.detalhes.map((item, index) => (
