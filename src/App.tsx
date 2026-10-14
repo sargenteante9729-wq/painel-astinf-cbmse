@@ -46,7 +46,7 @@ const setores = [
 
 export default function App() {
   const [abertura, setAbertura] = useState(true);
-  const [selecionado, setSelecionado] = useState('ADM');
+  const [selecionado, setSelecionado] = useState<string | null>(null);
   const [abaDetalhes, setAbaDetalhes] = useState<'visao' | 'atribuicoes'>('visao');
   const [busca, setBusca] = useState('');
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -61,8 +61,7 @@ export default function App() {
     }
   }, [abertura]);
 
-  const setorAtual =
-    setores.find((setor) => setor.nome === selecionado) ?? setores[0];
+  const setorAtual = setores.find((setor) => setor.nome === selecionado);
 
   const setoresFiltrados = setores.filter((setor) =>
     `${setor.nome} ${setor.descricao}`
@@ -155,7 +154,10 @@ export default function App() {
                 key={setor.nome}
                 className={`sector-card ${selecionado === setor.nome ? 'selected' : ''}`}
                 style={{ '--sector-color': setor.cor } as CSSProperties}
-                onClick={() => setSelecionado(setor.nome)}
+                onClick={() => {
+                  setSelecionado(setor.nome);
+                  setAbaDetalhes('visao');
+                }}
               >
                 <img src={setor.imagem} alt="" />
                 <div className="sector-card-content">
@@ -172,6 +174,7 @@ export default function App() {
           </div>
         </section>
 
+        {setorAtual && (
         <section className="sector-details">
           <div className="detail-heading">
             <div>
@@ -229,6 +232,7 @@ export default function App() {
             )}
           </div>
         </section>
+        )}
 
         <footer className="footer">
           Corpo de Bombeiros Militar do Estado de Sergipe
