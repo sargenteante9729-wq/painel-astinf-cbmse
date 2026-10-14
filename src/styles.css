@@ -139,19 +139,31 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
 .back-to-sectors { padding: 9px 13px; border: 1px solid #38434a; border-radius: 6px; background: #171e22; color: #dbe3e8; font: inherit; font-size: 11px; cursor: pointer; }
 .back-to-sectors:hover { border-color: #ff4a4a; color: #fff; }
 .detail-sector-identity { display: flex; align-items: center; gap: 12px; }
-.detail-tabs { display: flex; align-items: center; gap: 24px; margin-top: 24px; border-bottom: 1px solid #2b3338; color: #9aa6ae; font-size: 11px; }
-.detail-tabs > button { position: relative; padding: 0 0 13px; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
-.detail-tabs > button:hover { color: #e8edf0; }
-.detail-tabs .active-tab { color: #ff4a4a; border-bottom: 2px solid #ff4a4a; }
-.detail-tabs b { margin-left: 5px; padding: 3px 6px; border-radius: 4px; color: #aab5bc; background: #20272c; font-size: 9px; }
-.detail-panel-full { grid-column: 1 / -1; }
-.detail-columns { display: grid; grid-template-columns: 1fr 1.25fr; gap: 25px; padding-top: 23px; }
-.detail-columns h3 { margin: 0 0 15px; color: #9ba8b1; font-size: 10px; font-weight: 650; letter-spacing: .35px; }
-.empty-panel { padding: 17px; border: 1px solid #2a3238; border-radius: 7px; background: #101518; color: #84919a; font-size: 11px; line-height: 1.7; }
-.assignment-list { border: 1px solid #2a3238; border-radius: 7px; overflow: hidden; }
-.assignment { display: flex; align-items: flex-start; gap: 12px; padding: 13px 15px; border-bottom: 1px solid #252d32; color: #d4dbe0; font-size: 11px; line-height: 1.5; }
-.assignment:last-child { border-bottom: 0; }
-.assignment > span { color: #ff5353; font-size: 10px; font-weight: 700; }
+.detail-option-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+.detail-option-card { min-width: 0; display: flex; align-items: center; gap: 14px; padding: 18px; text-align: left; color: #dbe5ea; background: linear-gradient(135deg, #0d2029, #08151d); border: 1px solid #24404b; border-left: 3px solid #334953; border-radius: 10px; cursor: pointer; }
+.detail-option-card:hover, .detail-option-card.active { border-color: #ff3547; border-left-color: #ff3547; background: linear-gradient(135deg, #142832, #0a171f); }
+.option-icon { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; border-radius: 9px; color: #fff; background: linear-gradient(140deg, #e92337, #a90e20); font-size: 22px; }
+.option-copy { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1; }
+.option-copy strong { color: #f4f7f9; font-size: 14px; }
+.option-copy small { color: #9babb4; font-size: 11px; line-height: 1.5; }
+.option-count { padding: 5px 8px; border-radius: 5px; background: #202c33; color: #e6edf1; font-size: 11px; font-weight: 750; }
+.option-arrow { color: #ff4657; font-size: 23px; }
+.detail-subcards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding-top: 18px; }
+.detail-subcard { min-width: 0; min-height: 150px; padding: 18px; border: 1px solid #233b46; border-radius: 9px; border-top: 2px solid #ff3547; background: linear-gradient(145deg, #0c1c24, #08131a); }
+.subcard-kicker { display: block; margin-bottom: 12px; color: #ff5867; font-size: 9px; font-weight: 750; letter-spacing: 1px; }
+.detail-subcard h3 { margin: 0 0 10px; color: #f1f5f7; font-size: 13px; line-height: 1.5; }
+.detail-subcard p { margin: 0; color: #a9b8c0; font-size: 11px; line-height: 1.7; }
+.subcard-action { margin-top: 15px; padding: 8px 10px; border: 1px solid #ff3547; border-radius: 5px; background: #34131a; color: #fff; font-size: 10px; cursor: pointer; }
+.subcard-action:hover { background: #a90e20; }
+.assignment-subcard { min-height: 140px; }
+@media (max-width: 720px) {
+  .detail-option-cards { grid-template-columns: 1fr; gap: 10px; }
+  .detail-subcards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .detail-subcard { padding: 14px; }
+}
+@media (max-width: 430px) {
+  .detail-subcards { grid-template-columns: 1fr; }
+}
 .footer { padding: 20px 0 25px; border-top: 1px solid #252d32; display: flex; justify-content: space-between; gap: 15px; color: #7f8c96; font-size: 10px; }
 .footer span { color: #aab4bc; font-weight: 650; }
 
