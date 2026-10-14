@@ -278,3 +278,8 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
 .admin-content-form button:disabled { opacity: .6; cursor: wait; }
 .admin-success { grid-column: 1 / -1; margin: 0; color: #7ee8b4; font-size: 13px; }
 @media (max-width: 650px) { .admin-content-form { grid-template-columns: 1fr; } .admin-content-form label:nth-child(3) { grid-column: auto; } }
+
+
+.activity-delete-button { display: inline-flex; align-items: center; justify-content: center; margin-top: 12px; border: 1px solid #ff6574; border-radius: 7px; padding: 8px 11px; color: #ff9da7; background: #3a1118; font-size: 12px; font-weight: 750; cursor: pointer; }
+.activity-delete-button:hover { color: #fff; background: #a91122; }
+.activity-delete-button:disabled { opacity: .55; cursor: wait; }
