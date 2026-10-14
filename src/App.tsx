@@ -148,6 +148,7 @@ export default function App() {
             />
           </div>
 
+          {!selecionado && (
           <div className="sector-grid">
             {setoresFiltrados.map((setor, index) => (
               <button
@@ -172,12 +173,20 @@ export default function App() {
               </button>
             ))}
           </div>
+          )}
         </section>
 
         {setorAtual && (
         <section className="sector-details">
           <div className="detail-heading">
-            <div>
+            <button
+              type="button"
+              className="back-to-sectors"
+              onClick={() => setSelecionado(null)}
+            >
+              ← Voltar aos cinco cards
+            </button>
+            <div className="detail-sector-identity">
               <span className="detail-symbol" style={{ color: setorAtual.cor }}>◈</span>
               <div>
                 <h2>{setorAtual.nome}</h2>
