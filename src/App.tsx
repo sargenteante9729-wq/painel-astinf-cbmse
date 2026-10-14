@@ -1,6 +1,6 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react';
-import { supabase, supabaseConfigured } from './lib/supabase';
+import { supabase } from './lib/supabase';
 
 const setores = [
   {
