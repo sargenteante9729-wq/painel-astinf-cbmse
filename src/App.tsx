@@ -46,6 +46,7 @@ const setores = [
 ];
 
 type SectorRecord = { id: string; name: string; description: string; purpose: string; display_order: number; is_active: boolean };
+type ActivityRecord = { id: string; sector_id: string; title: string; description: string; status: 'active' | 'inactive'; display_order: number };
 
 export default function App() {
   const [abertura, setAbertura] = useState(true);
@@ -58,6 +59,7 @@ export default function App() {
   const [loginCarregando, setLoginCarregando] = useState(false);
   const [usuarioAdmin, setUsuarioAdmin] = useState(false);
   const [setoresBanco, setSetoresBanco] = useState<SectorRecord[]>([]);
+  const [atividadesBanco, setAtividadesBanco] = useState<ActivityRecord[]>([]);
   const [statusConexao, setStatusConexao] = useState('Verificando conexão com o banco…');
   const [adminSecao, setAdminSecao] = useState<'atividades' | 'sistemas' | 'equipe'>('atividades');
   const [atividadeSetor, setAtividadeSetor] = useState('');
@@ -85,6 +87,7 @@ export default function App() {
       if (error) setStatusConexao('Falha na leitura de sectors: ' + error.message);
       else { setSetoresBanco((data || []) as SectorRecord[]); setStatusConexao('Conexão ativa · ' + (data?.length || 0) + ' setores lidos do Supabase.'); }
     });
+    supabase.from('activities').select('id,sector_id,title,description,status,display_order').eq('status', 'active').order('display_order').then(({ data, error }) => { if (ativo && !error && data) setAtividadesBanco(data as ActivityRecord[]); });
     supabase.auth.getSession().then(async ({ data }) => {
       if (!ativo || !data.session?.user) return;
       const { data: papel } = await supabase!.from('user_roles').select('role').eq('user_id', data.session.user.id).maybeSingle();
@@ -95,7 +98,8 @@ export default function App() {
 
   const setoresExibidos = setoresBanco.length ? setoresBanco.map((registro) => {
     const local = setores.find((item) => item.nome.toLowerCase() === registro.name.toLowerCase());
-    return { nome: registro.name, descricao: registro.description || local?.descricao || '', imagem: local?.imagem || setores[0].imagem, cor: local?.cor || '#58a6ff', atribuicoes: local?.atribuicoes || 0, detalhes: local?.detalhes || [], id: registro.id };
+    const atividadesSetor = atividadesBanco.filter((atividade) => atividade.sector_id === registro.id);
+    return { nome: registro.name, descricao: registro.description || local?.descricao || '', imagem: local?.imagem || setores[0].imagem, cor: local?.cor || '#58a6ff', atribuicoes: atividadesBanco.length ? atividadesSetor.length : (local?.atribuicoes || 0), detalhes: atividadesBanco.length ? atividadesSetor.map((atividade) => atividade.title) : (local?.detalhes || []), atividadesSetor, id: registro.id };
   }) : setores;
   const setorAtual = setoresExibidos.find((setor) => setor.nome === selecionado);
 
@@ -125,7 +129,9 @@ export default function App() {
     });
     if (error) setMensagemAdmin('Não foi possível cadastrar: ' + error.message);
     else {
-      setMensagemAdmin('Atividade cadastrada com sucesso. A lista pública será atualizada na próxima etapa.');
+      setMensagemAdmin('Atividade cadastrada com sucesso. Ela já foi adicionada ao painel.');
+      const { data: atualizadas } = await supabase.from('activities').select('id,sector_id,title,description,status,display_order').eq('status', 'active').order('display_order');
+      if (atualizadas) setAtividadesBanco(atualizadas as ActivityRecord[]);
       setAtividadeTitulo('');
       setAtividadeDescricao('');
     }
@@ -293,7 +299,7 @@ export default function App() {
                 <article className="detail-subcard">
                   <span className="subcard-kicker">ATRIBUIÇÕES</span>
                   <h3>Atividades cadastradas</h3>
-                  <p>{setorAtual.detalhes.length} atividades descritas para este setor.</p>
+                  <p>{setorAtual.detalhes.length} atividades cadastradas para este setor.</p>
                   <button type="button" className="subcard-action" onClick={() => setAbaDetalhes('atribuicoes')}>Ver atribuições →</button>
                 </article>
               </>
@@ -302,7 +308,7 @@ export default function App() {
               <article className="detail-subcard assignment-subcard" key={item}>
                 <span className="subcard-kicker">ATRIBUIÇÃO {String(index + 1).padStart(2, '0')}</span>
                 <h3>{item}</h3>
-                <p>Atividade vinculada ao setor de {setorAtual.nome}.</p>
+                <p>{(setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor?.find((atividade) => atividade.title === item)?.description || 'Atividade vinculada ao setor de ' + setorAtual.nome + '.'}</p>
               </article>
             ))}
           </div>
