@@ -59,14 +59,6 @@ export default function App() {
   const [usuarioAdmin, setUsuarioAdmin] = useState(false);
   const [setoresBanco, setSetoresBanco] = useState<SectorRecord[]>([]);
   const [statusConexao, setStatusConexao] = useState('Verificando conexão com o banco…');
-  const [loginAberto, setLoginAberto] = useState(false);
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [loginErro, setLoginErro] = useState('');
-  const [loginCarregando, setLoginCarregando] = useState(false);
-  const [usuarioAdmin, setUsuarioAdmin] = useState(false);
-  const [setoresBanco, setSetoresBanco] = useState<SectorRecord[]>([]);
-  const [statusConexao, setStatusConexao] = useState('Verificando conexão com o banco…');
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
