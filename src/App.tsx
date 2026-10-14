@@ -223,8 +223,25 @@ export default function App() {
               {mensagemAdmin && <p className={mensagemAdmin.includes('sucesso') ? 'admin-success' : 'admin-login-error'} role="status">{mensagemAdmin}</p>}
               <button type="submit" disabled={salvandoItem || setoresBanco.length === 0}>{salvandoItem ? 'Salvando…' : 'Cadastrar atividade'}</button>
             </form>}
-            {adminSecao === 'sistemas' && <p className="connection-note">Cadastro de sistemas será habilitado na próxima etapa.</p>}
-            {adminSecao === 'equipe' && <p className="connection-note">Cadastro de integrantes da equipe será habilitado na próxima etapa.</p>}
+            {adminSecao === 'sistemas' && <>
+              <form className="admin-content-form" onSubmit={cadastrarSistema}>
+                <label>Nome do sistema<input value={sistemaNome} onChange={(event) => setSistemaNome(event.target.value)} required maxLength={120} placeholder="Ex.: Sistema de Boletins" /></label>
+                <label>Descrição<input value={sistemaDescricao} onChange={(event) => setSistemaDescricao(event.target.value)} placeholder="Finalidade do sistema" /></label>
+                {mensagemAdmin && <p className={mensagemAdmin.includes('sucesso') || mensagemAdmin.includes('excluído') ? 'admin-success' : 'admin-login-error'} role="status">{mensagemAdmin}</p>}
+                <button type="submit" disabled={salvandoItem}>{salvandoItem ? 'Salvando…' : 'Cadastrar sistema'}</button>
+              </form>
+              <div className="admin-record-list">{sistemasBanco.map((sistema) => <article className="admin-record" key={sistema.id}><div><strong>{sistema.name}</strong><p>{sistema.description || 'Sem descrição.'}</p></div><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirSistema(sistema)}>Excluir</button></article>)}{sistemasBanco.length === 0 && <p className="connection-note">Nenhum sistema cadastrado.</p>}</div>
+            </>}
+            {adminSecao === 'equipe' && <>
+              <form className="admin-content-form" onSubmit={cadastrarMembro}>
+                <label>Setor<select value={membroSetor} onChange={(event) => setMembroSetor(event.target.value)} required><option value="">Selecione o setor</option>{setoresBanco.map((setor) => <option key={setor.id} value={setor.id}>{setor.name}</option>)}</select></label>
+                <label>Nome do integrante<input value={membroNome} onChange={(event) => setMembroNome(event.target.value)} required maxLength={140} placeholder="Nome completo" /></label>
+                <label>Função / cargo<input value={membroFuncao} onChange={(event) => setMembroFuncao(event.target.value)} maxLength={140} placeholder="Ex.: Chefe do setor" /></label>
+                {mensagemAdmin && <p className={mensagemAdmin.includes('sucesso') || mensagemAdmin.includes('excluído') ? 'admin-success' : 'admin-login-error'} role="status">{mensagemAdmin}</p>}
+                <button type="submit" disabled={salvandoItem || setoresBanco.length === 0}>{salvandoItem ? 'Salvando…' : 'Cadastrar integrante'}</button>
+              </form>
+              <div className="admin-record-list">{equipeBanco.map((membro) => <article className="admin-record" key={membro.id}><div><strong>{membro.display_name}</strong><p>{membro.role_title || 'Sem função informada'} · {setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || 'Setor'}</p></div><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirMembro(membro)}>Excluir</button></article>)}{equipeBanco.length === 0 && <p className="connection-note">Nenhum integrante cadastrado.</p>}</div>
+            </>}
           </section>}
 
           {!selecionado && (
@@ -317,7 +334,7 @@ export default function App() {
                 <article className="detail-subcard">
                   <span className="subcard-kicker">EQUIPE</span>
                   <h3>Responsáveis e equipe</h3>
-                  <p>Os nomes dos responsáveis e integrantes serão incluídos após a validação da estrutura oficial do setor.</p>
+                  {equipeBanco.filter((membro) => membro.sector_id === (setorAtual as typeof setorAtual & { id?: string }).id).length ? <ul className="team-member-list">{equipeBanco.filter((membro) => membro.sector_id === (setorAtual as typeof setorAtual & { id?: string }).id).map((membro) => <li key={membro.id}><strong>{membro.display_name}</strong>{membro.role_title && <span>{membro.role_title}</span>}</li>)}</ul> : <p>Não há integrantes cadastrados para este setor.</p>}
                 </article>
                 <article className="detail-subcard">
                   <span className="subcard-kicker">ATRIBUIÇÕES</span>
