@@ -261,3 +261,20 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
 .admin-login-form button:disabled { opacity: .65; cursor: wait; }
 .admin-login-error { margin: 0; color: #ff9da7; font-size: 13px; line-height: 1.45; }
 @media (max-width: 650px) { .section-title { align-items: flex-start; flex-direction: column; } .admin-modal { padding: 24px 20px; } }
+
+
+.admin-manager { margin: 18px 0 24px; padding: 22px; border: 1px solid #284651; border-radius: 12px; background: linear-gradient(135deg, #0d2029, #08141b); }
+.admin-manager-heading h3 { margin: 6px 0; font-size: 22px; color: #fff; }
+.admin-manager-heading p { margin: 0 0 18px; color: #a9bec8; font-size: 13px; }
+.admin-manager-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; border-bottom: 1px solid #28414b; padding-bottom: 12px; }
+.admin-manager-tabs button { border: 1px solid #294752; border-radius: 7px; padding: 10px 13px; background: #0a171e; color: #c5d7df; cursor: pointer; font-weight: 650; }
+.admin-manager-tabs button.active { background: #a91122; border-color: #ff3547; color: #fff; }
+.admin-content-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; max-width: 900px; }
+.admin-content-form label { display: grid; gap: 7px; color: #dce7ec; font-size: 13px; font-weight: 650; }
+.admin-content-form label:nth-child(3) { grid-column: 1 / -1; }
+.admin-content-form input, .admin-content-form textarea, .admin-content-form select { width: 100%; border: 1px solid #34505c; border-radius: 8px; padding: 11px 12px; color: #fff; background: #07141b; font: inherit; }
+.admin-content-form textarea { resize: vertical; }
+.admin-content-form button { justify-self: start; border: 0; border-radius: 8px; padding: 12px 16px; color: #fff; background: linear-gradient(100deg, #e62337, #a80d20); font-weight: 800; cursor: pointer; }
+.admin-content-form button:disabled { opacity: .6; cursor: wait; }
+.admin-success { grid-column: 1 / -1; margin: 0; color: #7ee8b4; font-size: 13px; }
+@media (max-width: 650px) { .admin-content-form { grid-template-columns: 1fr; } .admin-content-form label:nth-child(3) { grid-column: auto; } }
