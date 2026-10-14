@@ -33,7 +33,7 @@ button { -webkit-tap-highlight-color: transparent; }
   gap: 24px;
   background:
     linear-gradient(105deg, #06131a 0%, #07141b 48%, #10171d 75%, #300d13 100%);
-  border: 1px solid #243943;
+  border: 1px solid #ff293d;
   border-radius: 10px;
   margin: 18px clamp(14px, 1.5vw, 26px) 0;
   position: relative;
