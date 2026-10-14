@@ -59,6 +59,12 @@ export default function App() {
   const [usuarioAdmin, setUsuarioAdmin] = useState(false);
   const [setoresBanco, setSetoresBanco] = useState<SectorRecord[]>([]);
   const [statusConexao, setStatusConexao] = useState('Verificando conexão com o banco…');
+  const [adminSecao, setAdminSecao] = useState<'atividades' | 'sistemas' | 'equipe'>('atividades');
+  const [atividadeSetor, setAtividadeSetor] = useState('');
+  const [atividadeTitulo, setAtividadeTitulo] = useState('');
+  const [atividadeDescricao, setAtividadeDescricao] = useState('');
+  const [mensagemAdmin, setMensagemAdmin] = useState('');
+  const [salvandoItem, setSalvandoItem] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -104,6 +110,27 @@ export default function App() {
     setUsuarioAdmin(true); setLoginAberto(false); setSenha(''); setLoginCarregando(false);
   }
   async function sairAdmin() { await supabase?.auth.signOut(); setUsuarioAdmin(false); }
+
+  async function cadastrarAtividade(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setMensagemAdmin('');
+    if (!supabase || !usuarioAdmin) return;
+    setSalvandoItem(true);
+    const { error } = await supabase.from('activities').insert({
+      sector_id: atividadeSetor,
+      title: atividadeTitulo.trim(),
+      description: atividadeDescricao.trim(),
+      status: 'active',
+      display_order: 0,
+    });
+    if (error) setMensagemAdmin('Não foi possível cadastrar: ' + error.message);
+    else {
+      setMensagemAdmin('Atividade cadastrada com sucesso. A lista pública será atualizada na próxima etapa.');
+      setAtividadeTitulo('');
+      setAtividadeDescricao('');
+    }
+    setSalvandoItem(false);
+  }
 
 
   return (
@@ -153,6 +180,23 @@ export default function App() {
             </div>
           </div>
           <p className="connection-note" role="status">{statusConexao}</p>
+          {usuarioAdmin && <section className="admin-manager" aria-label="Gerenciar conteúdo do painel">
+            <div className="admin-manager-heading"><div><span className="admin-modal-kicker">PAINEL DE CONTROLE</span><h3>Gerenciar conteúdo</h3><p>Cadastre informações que serão armazenadas no Supabase.</p></div></div>
+            <div className="admin-manager-tabs">
+              <button type="button" className={adminSecao === 'atividades' ? 'active' : ''} onClick={() => setAdminSecao('atividades')}>Atribuições / atividades</button>
+              <button type="button" className={adminSecao === 'sistemas' ? 'active' : ''} onClick={() => setAdminSecao('sistemas')}>Sistemas</button>
+              <button type="button" className={adminSecao === 'equipe' ? 'active' : ''} onClick={() => setAdminSecao('equipe')}>Equipe</button>
+            </div>
+            {adminSecao === 'atividades' && <form className="admin-content-form" onSubmit={cadastrarAtividade}>
+              <label>Setor<select value={atividadeSetor} onChange={(event) => setAtividadeSetor(event.target.value)} required><option value="">Selecione o setor</option>{setoresBanco.map((setor) => <option key={setor.id} value={setor.id}>{setor.name}</option>)}</select></label>
+              <label>Nome da atividade<input value={atividadeTitulo} onChange={(event) => setAtividadeTitulo(event.target.value)} required maxLength={160} placeholder="Ex.: Fiscalização de contratos" /></label>
+              <label>Descrição<textarea value={atividadeDescricao} onChange={(event) => setAtividadeDescricao(event.target.value)} rows={3} placeholder="Descreva a atribuição ou atividade" /></label>
+              {mensagemAdmin && <p className={mensagemAdmin.includes('sucesso') ? 'admin-success' : 'admin-login-error'} role="status">{mensagemAdmin}</p>}
+              <button type="submit" disabled={salvandoItem || setoresBanco.length === 0}>{salvandoItem ? 'Salvando…' : 'Cadastrar atividade'}</button>
+            </form>}
+            {adminSecao === 'sistemas' && <p className="connection-note">Cadastro de sistemas será habilitado na próxima etapa.</p>}
+            {adminSecao === 'equipe' && <p className="connection-note">Cadastro de integrantes da equipe será habilitado na próxima etapa.</p>}
+          </section>}
 
           {!selecionado && (
           <div className="sector-grid">
