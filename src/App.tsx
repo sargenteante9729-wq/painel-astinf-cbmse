@@ -191,6 +191,13 @@ export default function App() {
           src={`${import.meta.env.BASE_URL}cabeçalho.png`}
           alt="ASTINF CBMSE — Tecnologia a serviço da missão fim — Painel de gestão"
         />
+        {!usuarioAdmin && <button
+          type="button"
+          className="header-admin-hotspot"
+          aria-label="Acessar a área administrativa pelo botão Painel de Gestão"
+          title="Painel de Gestão"
+          onClick={() => { setLoginErro(''); setLoginAberto(true); }}
+        />}
       </header>
 
       <main className="main-content">
@@ -198,7 +205,7 @@ export default function App() {
           <div className="section-title">
             <div><h2>▦ &nbsp; ORGANOGRAMA DO SETOR</h2></div>
             <div className="admin-actions">
-              {usuarioAdmin ? <><span className="admin-connected">Administrador conectado</span><button className="admin-entry" type="button" onClick={sairAdmin}>Sair</button></> : <button className="admin-entry" type="button" onClick={() => { setLoginErro(''); setLoginAberto(true); }}>Área administrativa</button>}
+              {usuarioAdmin && <><span className="admin-connected">Administrador conectado</span><button className="admin-entry" type="button" onClick={sairAdmin}>Sair</button></>}
             </div>
           </div>
           <p className="connection-note" role="status">{statusConexao}</p>
