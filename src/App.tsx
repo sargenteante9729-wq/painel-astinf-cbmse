@@ -108,35 +108,6 @@ export default function App() {
       </header>
 
       <main className="main-content">
-        <section className="stats">
-          <article className="stat">
-            <span className="stat-icon">⌘</span>
-            <div><strong>05</strong><small>Setores integrados</small></div>
-            <span className="stat-arrow" aria-hidden="true">›</span>
-          </article>
-          <article className="stat">
-            <span className="stat-icon">♙</span>
-            <div><strong>10</strong><small>Registros de equipe</small></div>
-            <span className="stat-arrow" aria-hidden="true">›</span>
-          </article>
-          <article className="stat">
-            <span className="stat-icon">☷</span>
-            <div><strong>15</strong><small>Atribuições documentadas</small></div>
-            <span className="stat-arrow" aria-hidden="true">›</span>
-          </article>
-          <div className="video-preview">
-            <video
-              src={`${import.meta.env.BASE_URL}videos/intro.mp4`}
-              muted
-              playsInline
-              preload="metadata"
-            />
-            <button onClick={() => setAbertura(true)}>
-              ▶ Rever abertura
-            </button>
-          </div>
-        </section>
-
         <section className="sector-section">
           <div className="section-title">
             <div>
