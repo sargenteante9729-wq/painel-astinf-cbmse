@@ -43,7 +43,7 @@ button { -webkit-tap-highlight-color: transparent; }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #031018 0%, #06131ad9 42%, #07131ab3 70%, #150a10b8 100%), url("https://images.unsplash.com/photo-1599708153386-62bf4f984a6b?auto=format&fit=crop&w=1800&q=80") center 48% / cover no-repeat;
+  background: linear-gradient(90deg, #031018d9 0%, #06131ac7 38%, #07131a85 68%, #150a10a8 100%), url("https://images.unsplash.com/photo-1744770194336-9ea55bb36e57?auto=format&fit=crop&w=2000&q=85") center 46% / cover no-repeat;
   opacity: .96;
   pointer-events: none;
 }
