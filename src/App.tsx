@@ -48,7 +48,6 @@ export default function App() {
   const [abertura, setAbertura] = useState(true);
   const [selecionado, setSelecionado] = useState<string | null>(null);
   const [abaDetalhes, setAbaDetalhes] = useState<'visao' | 'atribuicoes'>('visao');
-  const [busca, setBusca] = useState('');
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -62,12 +61,6 @@ export default function App() {
   }, [abertura]);
 
   const setorAtual = setores.find((setor) => setor.nome === selecionado);
-
-  const setoresFiltrados = setores.filter((setor) =>
-    `${setor.nome} ${setor.descricao}`
-      .toLowerCase()
-      .includes(busca.toLowerCase())
-  );
 
   return (
     <div className="dashboard">
@@ -113,18 +106,11 @@ export default function App() {
             <div>
               <h2>▦ &nbsp; ORGANOGRAMA DO SETOR</h2>
             </div>
-            <input
-              type="search"
-              value={busca}
-              onChange={(event) => setBusca(event.target.value)}
-              placeholder="⌕  Buscar setor..."
-              aria-label="Buscar setor"
-            />
           </div>
 
           {!selecionado && (
           <div className="sector-grid">
-            {setoresFiltrados.map((setor, index) => (
+            {setores.map((setor, index) => (
               <button
                 key={setor.nome}
                 className={`sector-card ${selecionado === setor.nome ? 'selected' : ''}`}
