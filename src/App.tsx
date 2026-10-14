@@ -59,6 +59,14 @@ export default function App() {
   const [usuarioAdmin, setUsuarioAdmin] = useState(false);
   const [setoresBanco, setSetoresBanco] = useState<SectorRecord[]>([]);
   const [statusConexao, setStatusConexao] = useState('Verificando conexão com o banco…');
+  const [loginAberto, setLoginAberto] = useState(false);
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [loginErro, setLoginErro] = useState('');
+  const [loginCarregando, setLoginCarregando] = useState(false);
+  const [usuarioAdmin, setUsuarioAdmin] = useState(false);
+  const [setoresBanco, setSetoresBanco] = useState<SectorRecord[]>([]);
+  const [statusConexao, setStatusConexao] = useState('Verificando conexão com o banco…');
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -147,14 +155,16 @@ export default function App() {
       <main className="main-content">
         <section className="sector-section">
           <div className="section-title">
-            <div>
-              <h2>▦ &nbsp; ORGANOGRAMA DO SETOR</h2>
+            <div><h2>▦ &nbsp; ORGANOGRAMA DO SETOR</h2></div>
+            <div className="admin-actions">
+              {usuarioAdmin ? <><span className="admin-connected">Administrador conectado</span><button className="admin-entry" type="button" onClick={sairAdmin}>Sair</button></> : <button className="admin-entry" type="button" onClick={() => { setLoginErro(''); setLoginAberto(true); }}>Área administrativa</button>}
             </div>
           </div>
+          <p className="connection-note" role="status">{statusConexao}</p>
 
           {!selecionado && (
           <div className="sector-grid">
-            {setores.map((setor, index) => (
+            {setoresExibidos.map((setor, index) => (
               <button
                 key={setor.nome}
                 className={`sector-card ${selecionado === setor.nome ? 'selected' : ''}`}
@@ -262,6 +272,20 @@ export default function App() {
           </div>
         </section>
         )}
+
+        {loginAberto && <div className="admin-modal-backdrop" role="presentation" onClick={() => setLoginAberto(false)}>
+          <section className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-login-title" onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="admin-modal-close" aria-label="Fechar" onClick={() => setLoginAberto(false)}>×</button>
+            <span className="admin-modal-kicker">ASTINF · ACESSO RESTRITO</span><h2 id="admin-login-title">Área administrativa</h2>
+            <p>Entre com o e-mail e a senha cadastrados no Supabase.</p>
+            <form onSubmit={entrarAdmin} className="admin-login-form">
+              <label>E-mail<input type="email" autoComplete="username" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
+              <label>Senha<input type="password" autoComplete="current-password" value={senha} onChange={(event) => setSenha(event.target.value)} required /></label>
+              {loginErro && <p className="admin-login-error" role="alert">{loginErro}</p>}
+              <button type="submit" disabled={loginCarregando}>{loginCarregando ? "Verificando acesso…" : "Entrar"}</button>
+            </form>
+          </section>
+        </div>}
 
         <footer className="footer">
           Corpo de Bombeiros Militar do Estado de Sergipe
