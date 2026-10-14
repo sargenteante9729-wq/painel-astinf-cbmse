@@ -25,40 +25,26 @@ button { -webkit-tap-highlight-color: transparent; }
 .dashboard { min-height: 100vh; background: #090c0e; color: #f4f7fa; }
 
 .topbar {
-  min-height: 176px;
-  padding: 20px clamp(24px, 3.5vw, 58px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 30px;
-  background:
-    linear-gradient(105deg, #06131a 0%, #07141b 48%, #10171d 75%, #300d13 100%);
-  border: 2px solid #ff293d;
-  border-radius: 10px;
+  width: auto;
+  min-height: 0;
+  height: clamp(120px, 13.6vw, 280px);
+  padding: 0;
   margin: 18px clamp(14px, 1.5vw, 26px) 0;
-  position: relative;
+  display: block;
   overflow: hidden;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  position: relative;
 }
-.topbar::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, #031018d9 0%, #06131ac7 38%, #07131a85 68%, #150a10a8 100%), url("https://images.unsplash.com/photo-1744770194336-9ea55bb36e57?auto=format&fit=crop&w=2000&q=85") center 46% / cover no-repeat;
-  opacity: .96;
-  pointer-events: none;
+.header-banner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
 }
-.topbar::after {
-  content: "";
-  position: absolute;
-  top: 0; right: 0; bottom: 0;
-  width: 25%;
-  background: repeating-linear-gradient(125deg, #f21f32 0 22px, #b90e20 22px 44px, #390d16 44px 66px);
-  opacity: .82;
-  clip-path: polygon(38% 0, 100% 0, 100% 100%, 0 100%);
-  pointer-events: none;
-}
-.topbar > * { position: relative; z-index: 1; }
-
 .brand { display: flex; align-items: center; gap: 28px; min-width: 0; }
 .brand-logo { display: block; width: 250px; height: auto; max-height: 92px; object-fit: contain; flex: 0 1 250px; }
 .brand-copy { padding-left: 34px; border-left: 1px solid #4c6570; display: flex; flex-direction: column; justify-content: center; gap: 8px; min-width: 0; }
