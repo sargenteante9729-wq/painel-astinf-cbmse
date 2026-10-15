@@ -70,7 +70,12 @@ export default function App() {
   const [membroNome, setMembroNome] = useState('');
   const [membroFuncao, setMembroFuncao] = useState('');
   const [statusConexao, setStatusConexao] = useState('Verificando conexão com o banco…');
-  const [adminSecao, setAdminSecao] = useState<'atividades' | 'sistemas' | 'equipe'>('atividades');
+  const [adminSecao, setAdminSecao] = useState<'setores' | 'atividades' | 'sistemas' | 'equipe'>('setores');
+  const [setorEditando, setSetorEditando] = useState<string | null>(null);
+  const [setorNome, setSetorNome] = useState('');
+  const [setorDescricao, setSetorDescricao] = useState('');
+  const [setorFinalidade, setSetorFinalidade] = useState('');
+  const [setorOrdem, setSetorOrdem] = useState('0');
   const [atividadeSetor, setAtividadeSetor] = useState('');
   const [atividadeTitulo, setAtividadeTitulo] = useState('');
   const [atividadeDescricao, setAtividadeDescricao] = useState('');
@@ -131,6 +136,26 @@ export default function App() {
 
   function editarAtividade(atividade: ActivityRecord) {
     setAdminSecao('atividades'); setAtividadeEditando(atividade.id); setAtividadeSetor(atividade.sector_id); setAtividadeTitulo(atividade.title); setAtividadeDescricao(atividade.description || ''); setMensagemAdmin('Editando atividade: ' + atividade.title);
+  }
+
+  function editarSetor(setor: SectorRecord) {
+    setAdminSecao('setores'); setSetorEditando(setor.id); setSetorNome(setor.name); setSetorDescricao(setor.description || ''); setSetorFinalidade(setor.purpose || ''); setSetorOrdem(String(setor.display_order)); setMensagemAdmin('Editando card visual: ' + setor.name);
+  }
+  async function salvarSetor(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); if (!supabase || !usuarioAdmin || !setorEditando) return;
+    setSalvandoItem(true); setMensagemAdmin('');
+    const { error } = await supabase.from('sectors').update({ name: setorNome.trim(), description: setorDescricao.trim(), purpose: setorFinalidade.trim(), display_order: Number(setorOrdem) || 0 }).eq('id', setorEditando);
+    if (error) setMensagemAdmin('Não foi possível alterar o card: ' + error.message);
+    else { setMensagemAdmin('Card do setor alterado com sucesso.'); setSetorEditando(null); setSetorNome(''); setSetorDescricao(''); setSetorFinalidade(''); setSetorOrdem('0'); const { data } = await supabase.from('sectors').select('id,name,description,purpose,display_order,is_active').eq('is_active', true).order('display_order'); if (data) setSetoresBanco(data as SectorRecord[]); }
+    setSalvandoItem(false);
+  }
+  async function excluirSetor(setor: SectorRecord) {
+    if (!supabase || !usuarioAdmin || !window.confirm('Excluir o card do setor "' + setor.name + '"? O banco impedirá a exclusão se houver atividades ou integrantes vinculados.')) return;
+    setSalvandoItem(true); setMensagemAdmin('');
+    const { error } = await supabase.from('sectors').delete().eq('id', setor.id);
+    if (error) setMensagemAdmin('Não foi possível excluir o setor. Verifique se existem atividades ou integrantes vinculados. Detalhe: ' + error.message);
+    else { setMensagemAdmin('Card do setor excluído.'); setSetoresBanco((items) => items.filter((item) => item.id !== setor.id)); if (selecionado === setor.name) setSelecionado(null); }
+    setSalvandoItem(false);
   }
 
   async function excluirAtividade(atividade: ActivityRecord) {
@@ -276,10 +301,23 @@ export default function App() {
           {usuarioAdmin && <section className="admin-manager" aria-label="Gerenciar conteúdo do painel">
             <div className="admin-manager-heading"><div><span className="admin-modal-kicker">PAINEL DE CONTROLE</span><h3>Gerenciar conteúdo</h3><p>Cadastre informações que serão armazenadas no Supabase.</p></div></div>
             <div className="admin-manager-tabs">
+              <button type="button" className={adminSecao === 'setores' ? 'active' : ''} onClick={() => setAdminSecao('setores')}>Cards / setores</button>
               <button type="button" className={adminSecao === 'atividades' ? 'active' : ''} onClick={() => setAdminSecao('atividades')}>Atribuições / atividades</button>
               <button type="button" className={adminSecao === 'sistemas' ? 'active' : ''} onClick={() => setAdminSecao('sistemas')}>Sistemas</button>
               <button type="button" className={adminSecao === 'equipe' ? 'active' : ''} onClick={() => setAdminSecao('equipe')}>Equipe</button>
             </div>
+            {adminSecao === 'setores' && <>
+              <p className="connection-note">Edite os dados exibidos nos cards. A imagem e a cor de cada card continuam seguindo o tema visual definido para o setor.</p>
+              {setorEditando && <form className="admin-content-form" onSubmit={salvarSetor}>
+                <label>Nome do setor<input value={setorNome} onChange={(event) => setSetorNome(event.target.value)} required maxLength={100} /></label>
+                <label>Texto exibido no card<input value={setorDescricao} onChange={(event) => setSetorDescricao(event.target.value)} required maxLength={200} /></label>
+                <label>Finalidade do setor<textarea value={setorFinalidade} onChange={(event) => setSetorFinalidade(event.target.value)} rows={2} /></label>
+                <label>Ordem de exibição<input type="number" value={setorOrdem} onChange={(event) => setSetorOrdem(event.target.value)} /></label>
+                {mensagemAdmin && <p className={mensagemAdmin.includes('sucesso') ? 'admin-success' : 'admin-login-error'} role="status">{mensagemAdmin}</p>}
+                <div className="admin-form-actions"><button type="submit" disabled={salvandoItem}>{salvandoItem ? 'Salvando…' : 'Salvar alterações do card'}</button><button type="button" className="admin-cancel-edit" onClick={() => { setSetorEditando(null); setMensagemAdmin('Edição cancelada.'); }}>Cancelar</button></div>
+              </form>}
+              <div className="admin-record-list">{setoresBanco.map((setor) => <article className="admin-record" key={setor.id}><div><strong>{setor.name}</strong><p>{setor.description || 'Sem descrição.'} · Ordem {setor.display_order}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarSetor(setor)}>Editar card</button><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirSetor(setor)}>Excluir card</button></div></article>)}</div>
+            </>}
             {adminSecao === 'atividades' && <form className="admin-content-form" onSubmit={cadastrarAtividade}>
               <label>Setor<select value={atividadeSetor} onChange={(event) => setAtividadeSetor(event.target.value)} required><option value="">Selecione o setor</option>{setoresBanco.map((setor) => <option key={setor.id} value={setor.id}>{setor.name}</option>)}</select></label>
               <label>Nome da atividade<input value={atividadeTitulo} onChange={(event) => setAtividadeTitulo(event.target.value)} required maxLength={160} placeholder="Ex.: Fiscalização de contratos" /></label>
