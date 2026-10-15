@@ -306,3 +306,12 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
 .development-systems-list li { display: flex; flex-direction: column; gap: 5px; padding: 12px 13px; border: 1px solid #294752; border-left: 3px solid #e62337; border-radius: 7px; background: #081820; }
 .development-systems-list strong { color: #f2f7fa; font-size: 13px; }
 .development-systems-list span { color: #a9bec8; font-size: 12px; line-height: 1.5; }
+
+
+.admin-record-actions, .admin-form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.admin-edit-button, .admin-cancel-edit { display: inline-flex; align-items: center; justify-content: center; border: 1px solid #58a6ff; border-radius: 7px; padding: 8px 11px; color: #b9dcff; background: #10263a; font-size: 12px; font-weight: 750; cursor: pointer; }
+.admin-edit-button:hover, .admin-cancel-edit:hover { color: #fff; background: #17466c; }
+.admin-record-actions .activity-delete-button { margin-top: 0; }
+.admin-form-actions { grid-column: 1 / -1; }
+.admin-form-actions button { margin: 0; }
+@media (max-width: 650px) { .admin-record-actions { align-items: stretch; flex-direction: column; } }
