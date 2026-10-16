@@ -53,7 +53,7 @@ type TeamRecord = { id: string; sector_id: string; display_name: string; role_ti
 export default function App() {
   const [abertura, setAbertura] = useState(true);
   const [selecionado, setSelecionado] = useState<string | null>(null);
-  const [abaDetalhes, setAbaDetalhes] = useState<'visao' | 'atribuicoes'>('visao');
+  const [abaDetalhes, setAbaDetalhes] = useState<'informacoes' | 'equipe' | 'atribuicoes' | 'sistemas' | null>(null);
   const [loginAberto, setLoginAberto] = useState(false);
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -355,7 +355,7 @@ export default function App() {
                 style={{ '--sector-color': setor.cor } as CSSProperties}
                 onClick={() => {
                   setSelecionado(setor.nome);
-                  setAbaDetalhes('visao');
+                  setAbaDetalhes(null);
                 }}
               >
                 <img src={setor.imagem} alt="" />
@@ -393,92 +393,37 @@ export default function App() {
             </div>
           </div>
 
-          <div className="detail-option-cards" role="tablist" aria-label="Informações do setor">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={abaDetalhes === 'visao'}
-              className={`detail-option-card ${abaDetalhes === 'visao' ? 'active' : ''}`}
-              onClick={() => setAbaDetalhes('visao')}
-            >
-              <img className="detail-option-image" src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=700&q=80" alt="" />
-              <span className="detail-option-content">
-                <span className="option-kicker">INFORMAÇÕES DO SETOR</span>
-                <span className="option-copy">
-                  <strong>Visão geral</strong>
-                  <small>Resumo, finalidade e responsáveis do setor</small>
-                </span>
-                <span className="option-footer"><span>Consultar informações</span><span>→</span></span>
-              </span>
+          <div className="detail-option-cards" role="group" aria-label="Conteúdo do setor">
+            <button type="button" className={`detail-option-card ${abaDetalhes === 'informacoes' ? 'active' : ''}`} aria-pressed={abaDetalhes === 'informacoes'} onClick={() => setAbaDetalhes(abaDetalhes === 'informacoes' ? null : 'informacoes')}>
+              <img className="detail-option-image" src={setoresExibidos.find((item) => item.nome === setorAtual.nome)?.imagem || setores[0].imagem} alt="" />
+              <span className="detail-option-content"><span className="option-kicker">SETOR / ASTINF</span><span className="option-copy"><strong>Informações do setor</strong><small>Descrição e finalidade do setor</small></span><span className="option-footer"><span>{abaDetalhes === 'informacoes' ? 'Ocultar informações' : 'Ver informações'}</span><span>→</span></span></span>
             </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={abaDetalhes === 'atribuicoes'}
-              className={`detail-option-card ${abaDetalhes === 'atribuicoes' ? 'active' : ''}`}
-              onClick={() => setAbaDetalhes('atribuicoes')}
-            >
+            <button type="button" className={`detail-option-card ${abaDetalhes === 'equipe' ? 'active' : ''}`} aria-pressed={abaDetalhes === 'equipe'} onClick={() => setAbaDetalhes(abaDetalhes === 'equipe' ? null : 'equipe')}>
+              <img className="detail-option-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
+              <span className="detail-option-content"><span className="option-kicker">EQUIPE</span><span className="option-copy"><strong>Responsáveis e equipe</strong><small>Integrantes e funções vinculados ao setor</small></span><span className="option-footer"><span>{abaDetalhes === 'equipe' ? 'Ocultar equipe' : 'Ver equipe'}</span><span>→</span></span></span>
+            </button>
+            <button type="button" className={`detail-option-card ${abaDetalhes === 'atribuicoes' ? 'active' : ''}`} aria-pressed={abaDetalhes === 'atribuicoes'} onClick={() => setAbaDetalhes(abaDetalhes === 'atribuicoes' ? null : 'atribuicoes')}>
               <img className="detail-option-image" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=700&q=80" alt="" />
-              <span className="detail-option-content">
-                <span className="option-kicker">ROTINAS E RESPONSABILIDADES</span>
-                <span className="option-copy">
-                  <strong>Atribuições</strong>
-                  <small>{setorAtual.detalhes.length} itens cadastrados para este setor</small>
-                </span>
-                <span className="option-footer"><span>Ver atribuições</span><span>{setorAtual.detalhes.length} itens&nbsp; →</span></span>
-              </span>
+              <span className="detail-option-content"><span className="option-kicker">ROTINAS E RESPONSABILIDADES</span><span className="option-copy"><strong>Atribuições</strong><small>{setorAtual.detalhes.length} itens cadastrados para este setor</small></span><span className="option-footer"><span>{abaDetalhes === 'atribuicoes' ? 'Ocultar atribuições' : 'Ver atribuições'}</span><span>→</span></span></span>
             </button>
+            {setorAtual.nome.toLowerCase() === 'desenvolvimento' && <button type="button" className={`detail-option-card ${abaDetalhes === 'sistemas' ? 'active' : ''}`} aria-pressed={abaDetalhes === 'sistemas'} onClick={() => setAbaDetalhes(abaDetalhes === 'sistemas' ? null : 'sistemas')}>
+              <img className="detail-option-image" src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=700&q=80" alt="" />
+              <span className="detail-option-content"><span className="option-kicker">CATÁLOGO DE TI</span><span className="option-copy"><strong>Sistemas</strong><small>Sistemas de desenvolvimento e sustentação</small></span><span className="option-footer"><span>{abaDetalhes === 'sistemas' ? 'Ocultar sistemas' : 'Ver sistemas'}</span><span>→</span></span></span>
+            </button>}
           </div>
 
-          <div className="detail-subcards">
-            {abaDetalhes === 'visao' && (
-              <>
-                <article className="detail-subcard overview-info-card">
-                  <img className="overview-card-image" src={setoresExibidos.find((item) => item.nome === setorAtual.nome)?.imagem || setores[0].imagem} alt="" />
-                  <div className="overview-card-content">
-                    <span className="subcard-kicker">SETOR / ASTINF</span>
-                    <h3>Sobre o setor</h3>
-                    <p>{setorAtual.descricao}. Esta área reúne as informações e atividades relacionadas a {setorAtual.nome}.</p>
-                    <span className="overview-card-footer">Finalidade e informações do setor <span>→</span></span>
-                  </div>
-                </article>
-                <article className="detail-subcard overview-info-card">
-                  <img className="overview-card-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
-                  <div className="overview-card-content">
-                    <span className="subcard-kicker">EQUIPE</span>
-                    <h3>Responsáveis e equipe</h3>
-                    {equipeBanco.filter((membro) => membro.sector_id === (setorAtual as typeof setorAtual & { id?: string }).id).length ? <ul className="team-member-list">{equipeBanco.filter((membro) => membro.sector_id === (setorAtual as typeof setorAtual & { id?: string }).id).map((membro) => <li key={membro.id}><strong>{membro.display_name}</strong>{membro.role_title && <span>{membro.role_title}</span>}</li>)}</ul> : <p>Não há integrantes cadastrados para este setor.</p>}
-                    <span className="overview-card-footer">Responsáveis pelo setor <span>→</span></span>
-                  </div>
-                </article>
-                <article className="detail-subcard overview-info-card">
-                  <img className="overview-card-image" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=700&q=80" alt="" />
-                  <div className="overview-card-content">
-                    <span className="subcard-kicker">ATRIBUIÇÕES</span>
-                    <h3>Atividades cadastradas</h3>
-                    <p>{setorAtual.detalhes.length} atividades cadastradas para este setor.</p>
-                    <button type="button" className="subcard-action" onClick={() => setAbaDetalhes('atribuicoes')}>Ver atribuições →</button>
-                  </div>
-                </article>
-                {setorAtual.nome.toLowerCase() === 'desenvolvimento' && <article className="detail-subcard development-systems-subcard">
-                  <span className="subcard-kicker">CATÁLOGO DE TI</span>
-                  <h3>Sistemas</h3>
-                  <p>Sistemas cadastrados para desenvolvimento e sustentação pela ASTINF.</p>
-                  {sistemasBanco.length > 0
-                    ? <ul className="development-systems-list">{sistemasBanco.map((sistema) => <li key={sistema.id}><strong>{sistema.name}</strong>{sistema.description && <span>{sistema.description}</span>}</li>)}</ul>
-                    : <p className="connection-note">Nenhum sistema cadastrado.</p>}
-                </article>}
-              </>
-            )}
-            {abaDetalhes === 'atribuicoes' && setorAtual.detalhes.map((item, index) => (
-              <article className="detail-subcard assignment-subcard" key={item}>
-                <span className="subcard-kicker">ATRIBUIÇÃO {String(index + 1).padStart(2, '0')}</span>
-                <h3>{item}</h3>
-                <p>{(setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor?.find((atividade) => atividade.title === item)?.description || 'Atividade vinculada ao setor de ' + setorAtual.nome + '.'}</p>
-                {usuarioAdmin && (setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor?.find((atividade) => atividade.title === item) && <div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarAtividade((setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor!.find((atividade) => atividade.title === item)!)}>Editar</button><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirAtividade((setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor!.find((atividade) => atividade.title === item)!)}>Excluir atividade</button></div>}
-              </article>
-            ))}
-          </div>
+          {abaDetalhes && <div className="detail-subcards">
+            {abaDetalhes === 'informacoes' && <article className="detail-subcard overview-info-card">
+              <img className="overview-card-image" src={setoresExibidos.find((item) => item.nome === setorAtual.nome)?.imagem || setores[0].imagem} alt="" />
+              <div className="overview-card-content"><span className="subcard-kicker">SETOR / ASTINF</span><h3>Sobre o setor</h3><p>{setorAtual.descricao}. Esta área reúne as informações e atividades relacionadas a {setorAtual.nome}.</p><span className="overview-card-footer">Finalidade e informações do setor <span>→</span></span></div>
+            </article>}
+            {abaDetalhes === 'equipe' && <article className="detail-subcard overview-info-card">
+              <img className="overview-card-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
+              <div className="overview-card-content"><span className="subcard-kicker">EQUIPE</span><h3>Responsáveis e equipe</h3>{equipeBanco.filter((membro) => membro.sector_id === (setorAtual as typeof setorAtual & { id?: string }).id).length ? <ul className="team-member-list">{equipeBanco.filter((membro) => membro.sector_id === (setorAtual as typeof setorAtual & { id?: string }).id).map((membro) => <li key={membro.id}><strong>{membro.display_name}</strong>{membro.role_title && <span>{membro.role_title}</span>}</li>)}</ul> : <p>Não há integrantes cadastrados para este setor.</p>}</div>
+            </article>}
+            {abaDetalhes === 'atribuicoes' && (setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor?.length ? (setorAtual as typeof setorAtual & { atividadesSetor?: ActivityRecord[] }).atividadesSetor!.map((atividade, index) => <article className="detail-subcard assignment-subcard" key={atividade.id}><span className="subcard-kicker">ATRIBUIÇÃO {String(index + 1).padStart(2, '0')}</span><h3>{atividade.title}</h3><p>{atividade.description || 'Atividade vinculada ao setor de ' + setorAtual.nome + '.'}</p>{usuarioAdmin && <div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarAtividade(atividade)}>Editar</button><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirAtividade(atividade)}>Excluir atividade</button></div>}</article>) : abaDetalhes === 'atribuicoes' ? <p className="connection-note">Nenhuma atribuição cadastrada para este setor.</p> : null}
+            {abaDetalhes === 'sistemas' && <article className="detail-subcard development-systems-subcard"><span className="subcard-kicker">CATÁLOGO DE TI</span><h3>Sistemas</h3><p>Sistemas cadastrados para desenvolvimento e sustentação pela ASTINF.</p>{sistemasBanco.length > 0 ? <ul className="development-systems-list">{sistemasBanco.map((sistema) => <li key={sistema.id}><strong>{sistema.name}</strong>{sistema.description && <span>{sistema.description}</span>}</li>)}</ul> : <p className="connection-note">Nenhum sistema cadastrado.</p>}</article>}
+          </div>}
         </section>
         )}
 
