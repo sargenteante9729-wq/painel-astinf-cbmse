@@ -378,7 +378,8 @@ export default function App() {
           {!selecionado && (
           <div className="org-chart">
             <div className="org-leadership" aria-label="Comando da ASTINF">
-              <article className="org-leader-card org-chief">\n                <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
+              <article className="org-leader-card org-chief">
+                <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
                 <span className="org-card-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4" /><path d="M4 21v-2a8 8 0 0 1 16 0v2z" /></svg></span>
                 <div className="org-leader-label">CHEFE</div>
                 <h3>Chefe</h3>
@@ -386,7 +387,8 @@ export default function App() {
                 <small>{equipeBanco.find((membro) => /chefe/i.test(membro.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.role_title || 'Responsável pela Assessoria'}</small>
                 {usuarioAdmin && <button type="button" className="org-edit-button" onClick={() => editarLideranca('chefe')}>Editar Chefe</button>}
               </article>
-              <article className="org-leader-card org-deputy">\n                <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
+              <article className="org-leader-card org-deputy">
+                <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
                 <span className="org-card-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4" /><path d="M4 21v-2a8 8 0 0 1 16 0v2z" /></svg></span>
                 <div className="org-leader-label">SUBCHEFE</div>
                 <h3>Subchefe</h3>
