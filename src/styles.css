@@ -456,3 +456,19 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
   .org-connector::after { left: 8%; right: 8%; }
   .org-chart > .sector-grid .sector-card::before { top: -24px; height: 22px; }
 }
+
+
+/* Ligação vertical explícita entre o Chefe e o Subchefe */
+.org-chief { position: relative; }
+.org-chief::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 100%;
+  left: 50%;
+  height: 20px;
+  border-left: 2px solid #ff5722;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.org-deputy { position: relative; }
