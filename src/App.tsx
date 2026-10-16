@@ -433,21 +433,32 @@ export default function App() {
           <div className="detail-subcards">
             {abaDetalhes === 'visao' && (
               <>
-                <article className="detail-subcard">
-                  <span className="subcard-kicker">SETOR / ASTINF</span>
-                  <h3>Sobre o setor</h3>
-                  <p>{setorAtual.descricao}. Esta área reúne as informações e atividades relacionadas a {setorAtual.nome}.</p>
+                <article className="detail-subcard overview-info-card">
+                  <img className="overview-card-image" src={setoresExibidos.find((item) => item.nome === setorAtual.nome)?.imagem || setores[0].imagem} alt="" />
+                  <div className="overview-card-content">
+                    <span className="subcard-kicker">SETOR / ASTINF</span>
+                    <h3>Sobre o setor</h3>
+                    <p>{setorAtual.descricao}. Esta área reúne as informações e atividades relacionadas a {setorAtual.nome}.</p>
+                    <span className="overview-card-footer">Finalidade e informações do setor <span>→</span></span>
+                  </div>
                 </article>
-                <article className="detail-subcard">
-                  <span className="subcard-kicker">EQUIPE</span>
-                  <h3>Responsáveis e equipe</h3>
-                  {equipeBanco.filter((membro) => membro.sector_id === (setorAtual as typeof setorAtual & { id?: string }).id).length ? <ul className="team-member-list">{equipeBanco.filter((membro) => membro.sector_id === (setorAtual as typeof setorAtual & { id?: string }).id).map((membro) => <li key={membro.id}><strong>{membro.display_name}</strong>{membro.role_title && <span>{membro.role_title}</span>}</li>)}</ul> : <p>Não há integrantes cadastrados para este setor.</p>}
+                <article className="detail-subcard overview-info-card">
+                  <img className="overview-card-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
+                  <div className="overview-card-content">
+                    <span className="subcard-kicker">EQUIPE</span>
+                    <h3>Responsáveis e equipe</h3>
+                    {equipeBanco.filter((membro) => membro.sector_id === (setorAtual as typeof setorAtual & { id?: string }).id).length ? <ul className="team-member-list">{equipeBanco.filter((membro) => membro.sector_id === (setorAtual as typeof setorAtual & { id?: string }).id).map((membro) => <li key={membro.id}><strong>{membro.display_name}</strong>{membro.role_title && <span>{membro.role_title}</span>}</li>)}</ul> : <p>Não há integrantes cadastrados para este setor.</p>}
+                    <span className="overview-card-footer">Responsáveis pelo setor <span>→</span></span>
+                  </div>
                 </article>
-                <article className="detail-subcard">
-                  <span className="subcard-kicker">ATRIBUIÇÕES</span>
-                  <h3>Atividades cadastradas</h3>
-                  <p>{setorAtual.detalhes.length} atividades cadastradas para este setor.</p>
-                  <button type="button" className="subcard-action" onClick={() => setAbaDetalhes('atribuicoes')}>Ver atribuições →</button>
+                <article className="detail-subcard overview-info-card">
+                  <img className="overview-card-image" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=700&q=80" alt="" />
+                  <div className="overview-card-content">
+                    <span className="subcard-kicker">ATRIBUIÇÕES</span>
+                    <h3>Atividades cadastradas</h3>
+                    <p>{setorAtual.detalhes.length} atividades cadastradas para este setor.</p>
+                    <button type="button" className="subcard-action" onClick={() => setAbaDetalhes('atribuicoes')}>Ver atribuições →</button>
+                  </div>
                 </article>
                 {setorAtual.nome.toLowerCase() === 'desenvolvimento' && <article className="detail-subcard development-systems-subcard">
                   <span className="subcard-kicker">CATÁLOGO DE TI</span>
