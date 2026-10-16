@@ -540,3 +540,29 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
   border-color: #ff5722;
   border-width: 3px;
 }
+
+
+/* Ramificação da Subchefia para a linha horizontal que distribui aos setores */
+.org-leader-card.org-deputy {
+  overflow: visible;
+}
+.org-leader-card.org-deputy::after {
+  content: "";
+  position: absolute;
+  display: block;
+  top: 100%;
+  left: 50%;
+  width: 0;
+  height: 19px;
+  border-left: 3px solid #ff5722;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+}
+.org-connector::before {
+  top: 0;
+  height: 19px;
+}
+.org-connector::after {
+  top: 19px;
+}
