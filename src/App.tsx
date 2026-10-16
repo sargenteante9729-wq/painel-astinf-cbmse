@@ -401,12 +401,15 @@ export default function App() {
               className={`detail-option-card ${abaDetalhes === 'visao' ? 'active' : ''}`}
               onClick={() => setAbaDetalhes('visao')}
             >
-              <span className="option-icon">◉</span>
-              <span className="option-copy">
-                <strong>Visão geral</strong>
-                <small>Resumo, finalidade e responsáveis do setor</small>
+              <img className="detail-option-image" src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=700&q=80" alt="" />
+              <span className="detail-option-content">
+                <span className="option-kicker">INFORMAÇÕES DO SETOR</span>
+                <span className="option-copy">
+                  <strong>Visão geral</strong>
+                  <small>Resumo, finalidade e responsáveis do setor</small>
+                </span>
+                <span className="option-footer"><span>Consultar informações</span><span>→</span></span>
               </span>
-              <span className="option-arrow">→</span>
             </button>
             <button
               type="button"
@@ -415,13 +418,15 @@ export default function App() {
               className={`detail-option-card ${abaDetalhes === 'atribuicoes' ? 'active' : ''}`}
               onClick={() => setAbaDetalhes('atribuicoes')}
             >
-              <span className="option-icon">☷</span>
-              <span className="option-copy">
-                <strong>Atribuições</strong>
-                <small>{setorAtual.detalhes.length} itens cadastrados para este setor</small>
+              <img className="detail-option-image" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=700&q=80" alt="" />
+              <span className="detail-option-content">
+                <span className="option-kicker">ROTINAS E RESPONSABILIDADES</span>
+                <span className="option-copy">
+                  <strong>Atribuições</strong>
+                  <small>{setorAtual.detalhes.length} itens cadastrados para este setor</small>
+                </span>
+                <span className="option-footer"><span>Ver atribuições</span><span>{setorAtual.detalhes.length} itens&nbsp; →</span></span>
               </span>
-              <span className="option-count">{setorAtual.detalhes.length}</span>
-              <span className="option-arrow">→</span>
             </button>
           </div>
 
