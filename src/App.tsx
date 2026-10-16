@@ -351,15 +351,15 @@ export default function App() {
             <div className="org-leadership" aria-label="Comando da ASTINF">
               <article className="org-leader-card org-chief">
                 <span className="org-card-symbol" aria-hidden="true">★</span>
-                <div className="org-leader-label">CHEFIA</div>
-                <h3>Chefe da ASTINF</h3>
+                <div className="org-leader-label">CHEFE</div>
+                <h3>Chefe</h3>
                 <p>{equipeBanco.find((membro) => /chefe/i.test(membro.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p>
                 <small>{equipeBanco.find((membro) => /chefe/i.test(membro.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.role_title || 'Responsável pela Assessoria'}</small>
               </article>
               <article className="org-leader-card org-deputy">
                 <span className="org-card-symbol" aria-hidden="true">◆</span>
-                <div className="org-leader-label">SUBCHEFIA</div>
-                <h3>Subchefe da ASTINF</h3>
+                <div className="org-leader-label">SUBCHEFE</div>
+                <h3>Subchefe</h3>
                 <p>{equipeBanco.find((membro) => /subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p>
                 <small>{equipeBanco.find((membro) => /subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.role_title || 'Apoio à chefia e coordenação'}</small>
               </article>
