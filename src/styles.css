@@ -566,3 +566,38 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
 .org-connector::after {
   top: 19px;
 }
+
+
+/* Ajuste robusto da conexão Subchefe → distribuição dos setores */
+.org-leadership { position: relative; z-index: 3; }
+.org-leader-card.org-deputy::after {
+  top: calc(100% - 1px);
+  height: 39px;
+  border-left: 3px solid #ff5722;
+  z-index: 20;
+}
+.org-connector {
+  position: relative;
+  z-index: 2;
+  height: 39px;
+  margin-top: 0;
+}
+.org-connector::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 19px;
+  border-left: 3px solid #ff5722;
+  z-index: 4;
+}
+.org-connector::after {
+  content: "";
+  position: absolute;
+  top: 19px;
+  left: 8%;
+  right: 8%;
+  border-top: 3px solid #ff5722;
+  z-index: 3;
+}
+.org-connector span { z-index: 5; }
