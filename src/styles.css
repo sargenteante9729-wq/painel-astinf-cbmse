@@ -438,3 +438,21 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
   .org-leader-card { padding-bottom: 16px; }
   .org-leader-image { height: 100px; }
 }
+
+
+/* Ajuste do organograma: chefia mais próxima e conexões visíveis até cada setor */
+.org-leadership { margin-top: -16px; gap: 20px; }
+.org-chief::after { height: 22px; border-left: 2px solid #ff5722; }
+.org-connector { height: 38px; margin-bottom: 12px; }
+.org-connector::before { top: 0; height: 18px; border-left: 2px solid #ff5722; }
+.org-connector::after { top: 18px; border-top: 2px solid #ff5722; left: 8%; right: 8%; }
+.org-connector span { margin-top: 18px; }
+.org-chart > .sector-grid { overflow: visible; }
+.org-chart > .sector-grid .sector-card { position: relative; }
+.org-chart > .sector-grid .sector-card::before { content: ""; position: absolute; top: -28px; left: 50%; height: 26px; border-left: 2px solid #ff5722; transform: translateX(-50%); pointer-events: none; }
+@media (max-width: 720px) {
+  .org-leadership { margin-top: -10px; gap: 20px; }
+  .org-connector { height: 34px; }
+  .org-connector::after { left: 8%; right: 8%; }
+  .org-chart > .sector-grid .sector-card::before { top: -24px; height: 22px; }
+}
