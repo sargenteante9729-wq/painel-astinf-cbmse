@@ -472,3 +472,40 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
   pointer-events: none;
 }
 .org-deputy { position: relative; }
+
+
+/* Conexões ortogonais no organograma, seguindo o modelo de referência */
+.org-chief::after {
+  top: 100%;
+  left: 50%;
+  height: 20px;
+  border-left: 2px solid #ff5722;
+  transform: translateX(-50%);
+}
+.org-connector {
+  height: 38px;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+.org-connector::before {
+  top: 0;
+  left: 50%;
+  height: 19px;
+  border-left: 2px solid #ff5722;
+}
+.org-connector::after {
+  top: 19px;
+  left: 8%;
+  right: 8%;
+  border-top: 2px solid #ff5722;
+}
+.org-connector span { margin-top: 19px; }
+.org-chart > .sector-grid { position: relative; overflow: visible; }
+.org-chart > .sector-grid .sector-card::before {
+  top: -19px;
+  left: 50%;
+  width: 0;
+  height: 19px;
+  border-left: 2px solid #ff5722;
+  transform: translateX(-50%);
+}
