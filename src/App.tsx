@@ -350,7 +350,7 @@ export default function App() {
           <div className="org-chart">
             <div className="org-leadership" aria-label="Comando da ASTINF">
               <article className="org-leader-card org-chief">
-                <span className="org-card-symbol" aria-hidden="true">★</span>
+                
                 <div className="org-leader-label">CHEFE</div>
                 <h3>Chefe</h3>
                 <p>{equipeBanco.find((membro) => /chefe/i.test(membro.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p>
