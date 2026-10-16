@@ -347,7 +347,26 @@ export default function App() {
           </section>}
 
           {!selecionado && (
-          <div className="sector-grid">
+          <div className="org-chart">
+            <div className="org-leadership" aria-label="Comando da ASTINF">
+              <article className="org-leader-card org-chief">
+                <span className="org-card-symbol" aria-hidden="true">★</span>
+                <div className="org-leader-label">CHEFIA</div>
+                <h3>Chefe da ASTINF</h3>
+                <p>{equipeBanco.find((membro) => /chefe/i.test(membro.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p>
+                <small>{equipeBanco.find((membro) => /chefe/i.test(membro.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.role_title || 'Responsável pela Assessoria'}</small>
+              </article>
+              <article className="org-leader-card org-deputy">
+                <span className="org-card-symbol" aria-hidden="true">◆</span>
+                <div className="org-leader-label">SUBCHEFIA</div>
+                <h3>Subchefe da ASTINF</h3>
+                <p>{equipeBanco.find((membro) => /subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p>
+                <small>{equipeBanco.find((membro) => /subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.role_title || 'Apoio à chefia e coordenação'}</small>
+              </article>
+            </div>
+            <div className="org-connector" aria-hidden="true"><span>ESTRUTURA ORGANIZACIONAL</span></div>
+            <div className="sector-grid">
+
             {setoresExibidos.map((setor, index) => (
               <button
                 key={setor.nome}
@@ -370,6 +389,7 @@ export default function App() {
                 </div>
               </button>
             ))}
+            </div>
           </div>
           )}
         </section>
