@@ -509,3 +509,34 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
   border-left: 2px solid #ff5722;
   transform: translateX(-50%);
 }
+
+
+/* Correção: a linha Chefe → Subchefe era cortada pelo overflow do card */
+.org-leadership { overflow: visible; }
+.org-leader-card.org-chief {
+  overflow: visible;
+  z-index: 2;
+}
+.org-leader-card.org-chief .org-leader-image {
+  border-radius: 9px 9px 0 0;
+}
+.org-leader-card.org-chief::after {
+  content: "";
+  position: absolute;
+  display: block;
+  top: 100%;
+  bottom: auto;
+  left: 50%;
+  width: 0;
+  height: 20px;
+  border-left: 3px solid #ff5722;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+.org-leader-card.org-deputy { z-index: 1; }
+.org-connector::before,
+.org-connector::after,
+.org-chart > .sector-grid .sector-card::before {
+  border-color: #ff5722;
+  border-width: 3px;
+}
