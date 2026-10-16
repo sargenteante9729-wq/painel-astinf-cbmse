@@ -206,6 +206,20 @@ export default function App() {
   function editarMembro(membro: TeamRecord) {
     setAdminSecao('equipe'); setMembroEditando(membro.id); setMembroSetor(membro.sector_id); setMembroNome(membro.display_name); setMembroFuncao(membro.role_title || ''); setMensagemAdmin('Editando integrante: ' + membro.display_name);
   }
+  function editarLideranca(tipo: 'chefe' | 'subchefe') {
+    const membro = equipeBanco.find((item) => tipo === 'chefe'
+      ? /chefe/i.test(item.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(item.role_title || '')
+      : /subchefe|sub-chefe|adjunto/i.test(item.role_title || ''));
+    setAdminSecao('equipe');
+    if (membro) {
+      setMembroEditando(membro.id); setMembroSetor(membro.sector_id); setMembroNome(membro.display_name); setMembroFuncao(membro.role_title || (tipo === 'chefe' ? 'Chefe da ASTINF' : 'Subchefe da ASTINF'));
+      setMensagemAdmin('Editando ' + (tipo === 'chefe' ? 'Chefe' : 'Subchefe') + ' da ASTINF.');
+    } else {
+      setMembroEditando(null); setMembroSetor(setoresBanco[0]?.id || ''); setMembroNome(''); setMembroFuncao(tipo === 'chefe' ? 'Chefe da ASTINF' : 'Subchefe da ASTINF');
+      setMensagemAdmin('Cadastre o nome para ' + (tipo === 'chefe' ? 'Chefe' : 'Subchefe') + ' da ASTINF e salve.');
+    }
+    document.querySelector('.admin-manager')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
   async function cadastrarMembro(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (!supabase || !usuarioAdmin) return;
     setSalvandoItem(true); setMensagemAdmin('');
@@ -355,6 +369,7 @@ export default function App() {
                 <h3>Chefe</h3>
                 <p>{equipeBanco.find((membro) => /chefe/i.test(membro.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p>
                 <small>{equipeBanco.find((membro) => /chefe/i.test(membro.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.role_title || 'Responsável pela Assessoria'}</small>
+                {usuarioAdmin && <button type="button" className="org-edit-button" onClick={() => editarLideranca('chefe')}>Editar Chefe</button>}
               </article>
               <article className="org-leader-card org-deputy">
                 <span className="org-card-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4" /><path d="M4 21v-2a8 8 0 0 1 16 0v2z" /></svg></span>
@@ -362,6 +377,7 @@ export default function App() {
                 <h3>Subchefe</h3>
                 <p>{equipeBanco.find((membro) => /subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p>
                 <small>{equipeBanco.find((membro) => /subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.role_title || 'Apoio à chefia e coordenação'}</small>
+                {usuarioAdmin && <button type="button" className="org-edit-button" onClick={() => editarLideranca('subchefe')}>Editar Subchefe</button>}
               </article>
             </div>
             <div className="org-connector" aria-hidden="true"><span>ESTRUTURA ORGANIZACIONAL</span></div>
