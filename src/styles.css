@@ -400,3 +400,18 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
 @media (max-width: 720px) {
   .org-leadership { grid-template-columns: minmax(0, 330px); gap: 30px; }
 }
+
+
+/* Cards de liderança proporcionais e alinhados em cascata */
+.org-leadership { width: 100%; grid-template-columns: minmax(0, 320px); justify-content: center; gap: 28px; }
+.org-leader-card { width: 100%; min-height: 205px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 22px 24px; }
+.org-card-symbol { display: grid; place-items: center; width: 42px; height: 42px; flex: 0 0 42px; margin: 0 auto 10px; border: 1px solid #e72a3b66; border-radius: 50%; background: #e72a3b18; color: #ff6876; }
+.org-card-symbol svg { display: block; width: 22px; height: 22px; fill: currentColor; }
+.org-deputy .org-card-symbol { border-color: #58a6ff66; background: #58a6ff18; color: #77bcff; }
+.org-leader-card h3 { width: 100%; margin: 7px 0 9px; text-align: center; }
+.org-leader-card p { width: 100%; overflow-wrap: anywhere; text-align: center; }
+.org-leader-card small { width: 100%; text-align: center; }
+@media (max-width: 720px) {
+  .org-leadership { width: 100%; grid-template-columns: minmax(0, 1fr); max-width: 320px; margin: 0 auto; gap: 28px; }
+  .org-leader-card { min-height: 190px; padding: 18px 16px; }
+}
