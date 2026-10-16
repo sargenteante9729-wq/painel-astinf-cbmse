@@ -315,3 +315,21 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
 .admin-form-actions { grid-column: 1 / -1; }
 .admin-form-actions button { margin: 0; }
 @media (max-width: 650px) { .admin-record-actions { align-items: stretch; flex-direction: column; } }
+
+
+/* Cards internos seguem o mesmo padrão visual dos cards iniciais, em tamanho compacto. */
+.detail-option-cards { grid-template-columns: repeat(2, minmax(0, 250px)); align-items: stretch; gap: 14px; margin-top: 22px; }
+.detail-option-card { display: flex; flex-direction: column; align-items: stretch; gap: 0; overflow: hidden; padding: 0; text-align: left; color: #dbe5ea; background: linear-gradient(160deg, #101a20, #0a1116); border: 1px solid #293740; border-radius: 10px; cursor: pointer; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.detail-option-card:hover { transform: translateY(-3px); border-color: #687985; }
+.detail-option-card.active { border-color: #ff3547; box-shadow: inset 0 0 0 1px #ff3547, 0 8px 24px #0005; background: linear-gradient(160deg, #15242c, #0a1116); }
+.detail-option-image { display: block; width: 100%; height: 96px; object-fit: cover; filter: saturate(.72) brightness(.68); }
+.detail-option-content { display: flex; flex: 1; flex-direction: column; padding: 12px 13px 0; }
+.option-kicker { color: #ff6674; font-size: 8px; font-weight: 800; letter-spacing: .7px; }
+.option-copy { display: flex; flex-direction: column; gap: 5px; min-width: 0; flex: 1; padding-top: 7px; }
+.option-copy strong { color: #f4f7f9; font-size: 13px; font-weight: 800; }
+.option-copy small { color: #aebdc5; font-size: 10px; line-height: 1.45; }
+.option-footer { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 12px -13px 0; padding: 10px 13px; border-top: 1px solid #26353e; color: #aebdc5; font-size: 10px; font-weight: 700; }
+.option-footer span:last-child { color: #ff6574; }
+.detail-option-card.active .option-footer { background: #e6233712; }
+@media (max-width: 650px) { .detail-option-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .detail-option-image { height: 82px; } .detail-option-content { padding: 10px 10px 0; } .option-footer { margin-left: -10px; margin-right: -10px; padding: 9px 10px; font-size: 9px; } }
+@media (max-width: 390px) { .detail-option-cards { grid-template-columns: 1fr; } .detail-option-image { height: 105px; } }
