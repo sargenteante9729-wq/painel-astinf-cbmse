@@ -355,3 +355,38 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
 @media (max-width: 900px) { .detail-option-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; } }
 @media (max-width: 650px) { .detail-option-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
 @media (max-width: 390px) { .detail-option-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; } .detail-option-image { height: 70px; } .detail-option-content { padding: 8px 8px 0; } .option-footer { margin-left: -8px; margin-right: -8px; padding: 8px; } }
+
+
+/* Organograma inicial: chefia, subchefia e setores */
+.org-chart { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+.org-leadership { display: grid; grid-template-columns: repeat(2, minmax(0, 290px)); justify-content: center; gap: 22px; }
+.org-leader-card { position: relative; min-width: 0; padding: 20px 22px 18px; text-align: center; border: 1px solid #294653; border-top: 3px solid #e72a3b; border-radius: 12px; background: linear-gradient(145deg, #102630, #09151d 82%); box-shadow: 0 12px 28px #0003, inset 0 1px #ffffff08; }
+.org-deputy { border-top-color: #58a6ff; }
+.org-card-symbol { display: grid; place-items: center; width: 40px; height: 40px; margin: 0 auto 10px; border: 1px solid #e72a3b66; border-radius: 50%; background: #e72a3b18; color: #ff6876; font-size: 19px; }
+.org-deputy .org-card-symbol { border-color: #58a6ff66; background: #58a6ff18; color: #77bcff; }
+.org-leader-label { color: #ff6472; font-size: 9px; font-weight: 800; letter-spacing: 1.8px; }
+.org-deputy .org-leader-label { color: #77bcff; }
+.org-leader-card h3 { margin: 7px 0 9px; color: #f4f7f9; font-size: 16px; }
+.org-leader-card p { margin: 0; color: #fff; font-size: 14px; font-weight: 750; }
+.org-leader-card small { display: block; margin-top: 7px; color: #a6b7c0; font-size: 10px; line-height: 1.5; }
+.org-connector { position: relative; display: flex; justify-content: center; align-items: center; height: 54px; margin-bottom: 16px; }
+.org-connector::before { content: ""; position: absolute; top: 0; left: 50%; height: 27px; border-left: 1px solid #46606c; }
+.org-connector::after { content: ""; position: absolute; top: 27px; left: 8%; right: 8%; border-top: 1px solid #46606c; }
+.org-connector span { position: relative; z-index: 1; margin-top: 28px; padding: 5px 12px; border: 1px solid #294653; border-radius: 20px; background: #08151d; color: #91a7b2; font-size: 9px; font-weight: 750; letter-spacing: 1.2px; }
+.org-chart > .sector-grid { position: relative; gap: 14px; }
+.org-chart > .sector-grid .sector-card { min-height: 220px; }
+@media (max-width: 720px) {
+  .org-leadership { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .org-leader-card { padding: 16px 10px; }
+  .org-leader-card h3 { font-size: 13px; }
+  .org-leader-card p { font-size: 12px; overflow-wrap: anywhere; }
+  .org-leader-card small { font-size: 9px; }
+  .org-connector::after { left: 12%; right: 12%; }
+  .org-chart > .sector-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 430px) {
+  .org-leadership { grid-template-columns: 1fr; }
+  .org-leader-card { width: 100%; }
+  .org-connector { height: 48px; }
+  .org-chart > .sector-grid { grid-template-columns: 1fr; }
+}
