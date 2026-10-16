@@ -70,7 +70,7 @@ export default function App() {
   const [membroNome, setMembroNome] = useState('');
   const [membroFuncao, setMembroFuncao] = useState('');
   const [statusConexao, setStatusConexao] = useState('Verificando conexão com o banco…');
-  const [adminSecao, setAdminSecao] = useState<'setores' | 'atividades' | 'sistemas' | 'equipe'>('setores');
+  const [adminSecao, setAdminSecao] = useState<'setores' | 'atividades' | 'sistemas' | 'equipe' | 'chefia'>('setores');
   const [setorEditando, setSetorEditando] = useState<string | null>(null);
   const [setorNome, setSetorNome] = useState('');
   const [setorDescricao, setSetorDescricao] = useState('');
@@ -210,7 +210,7 @@ export default function App() {
     const membro = equipeBanco.find((item) => tipo === 'chefe'
       ? /chefe/i.test(item.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(item.role_title || '')
       : /subchefe|sub-chefe|adjunto/i.test(item.role_title || ''));
-    setAdminSecao('equipe');
+    setAdminSecao('chefia');
     if (membro) {
       setMembroEditando(membro.id); setMembroSetor(membro.sector_id); setMembroNome(membro.display_name); setMembroFuncao(membro.role_title || (tipo === 'chefe' ? 'Chefe da ASTINF' : 'Subchefe da ASTINF'));
       setMensagemAdmin('Editando ' + (tipo === 'chefe' ? 'Chefe' : 'Subchefe') + ' da ASTINF.');
@@ -318,7 +318,7 @@ export default function App() {
               <button type="button" className={adminSecao === 'setores' ? 'active' : ''} onClick={() => setAdminSecao('setores')}>Cards / setores</button>
               <button type="button" className={adminSecao === 'atividades' ? 'active' : ''} onClick={() => setAdminSecao('atividades')}>Atribuições / atividades</button>
               <button type="button" className={adminSecao === 'sistemas' ? 'active' : ''} onClick={() => setAdminSecao('sistemas')}>Sistemas</button>
-              <button type="button" className={adminSecao === 'equipe' ? 'active' : ''} onClick={() => setAdminSecao('equipe')}>Equipe</button>
+              <button type="button" className={adminSecao === 'equipe' ? 'active' : ''} onClick={() => setAdminSecao('equipe')}>Equipe</button><button type="button" className={adminSecao === 'chefia' ? 'active' : ''} onClick={() => setAdminSecao('chefia')}>Chefe / Subchefe</button>
             </div>
             {adminSecao === 'setores' && <>
               <p className="connection-note">Edite os dados exibidos nos cards. A imagem e a cor de cada card continuam seguindo o tema visual definido para o setor.</p>
@@ -348,6 +348,21 @@ export default function App() {
               </form>
               <div className="admin-record-list">{sistemasBanco.map((sistema) => <article className="admin-record" key={sistema.id}><div><strong>{sistema.name}</strong><p>{sistema.description || 'Sem descrição.'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarSistema(sistema)}>Editar</button><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirSistema(sistema)}>Excluir</button></div></article>)}{sistemasBanco.length === 0 && <p className="connection-note">Nenhum sistema cadastrado.</p>}</div>
             </>}
+            {adminSecao === 'chefia' && <>
+              <p className="connection-note">Edite os nomes e as funções exibidos nos cards de Chefe e Subchefe do organograma. Os dados são salvos no cadastro da equipe.</p>
+              <div className="admin-record-list">
+                <article className="admin-record"><div><strong>Chefe</strong><p>{equipeBanco.find((membro) => /chefe/i.test(membro.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarLideranca('chefe')}>Editar Chefe</button></div></article>
+                <article className="admin-record"><div><strong>Subchefe</strong><p>{equipeBanco.find((membro) => /subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarLideranca('subchefe')}>Editar Subchefe</button></div></article>
+              </div>
+              {(mensagemAdmin.startsWith('Editando Chefe') || mensagemAdmin.startsWith('Editando Subchefe') || mensagemAdmin.startsWith('Cadastre o nome')) && <form className="admin-content-form" onSubmit={cadastrarMembro}>
+                <h4>{membroEditando ? 'Editar integrante da chefia' : 'Cadastrar integrante da chefia'}</h4>
+                <label>Setor<select value={membroSetor} onChange={(event) => setMembroSetor(event.target.value)} required><option value="">Selecione o setor</option>{setoresBanco.map((setor) => <option key={setor.id} value={setor.id}>{setor.name}</option>)}</select></label>
+                <label>Nome<input value={membroNome} onChange={(event) => setMembroNome(event.target.value)} required maxLength={140} placeholder="Nome completo" /></label>
+                <label>Função<input value={membroFuncao} onChange={(event) => setMembroFuncao(event.target.value)} required maxLength={140} placeholder="Chefe da ASTINF ou Subchefe da ASTINF" /></label>
+                {mensagemAdmin && <p className={mensagemAdmin.includes('sucesso') ? 'admin-success' : 'admin-login-error'} role="status">{mensagemAdmin}</p>}
+                <div className="admin-form-actions"><button type="submit" disabled={salvandoItem || !membroSetor}>{salvandoItem ? 'Salvando…' : 'Salvar chefia'}</button><button type="button" className="admin-cancel-edit" onClick={() => { setMembroEditando(null); setMembroSetor(''); setMembroNome(''); setMembroFuncao(''); setMensagemAdmin('Edição cancelada.'); }}>Cancelar</button></div>
+              </form>}
+            </>}
             {adminSecao === 'equipe' && <>
               <form className="admin-content-form" onSubmit={cadastrarMembro}>
                 <label>Setor<select value={membroSetor} onChange={(event) => setMembroSetor(event.target.value)} required><option value="">Selecione o setor</option>{setoresBanco.map((setor) => <option key={setor.id} value={setor.id}>{setor.name}</option>)}</select></label>
@@ -363,7 +378,7 @@ export default function App() {
           {!selecionado && (
           <div className="org-chart">
             <div className="org-leadership" aria-label="Comando da ASTINF">
-              <article className="org-leader-card org-chief">
+              <article className="org-leader-card org-chief">\n                <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
                 <span className="org-card-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4" /><path d="M4 21v-2a8 8 0 0 1 16 0v2z" /></svg></span>
                 <div className="org-leader-label">CHEFE</div>
                 <h3>Chefe</h3>
@@ -371,7 +386,7 @@ export default function App() {
                 <small>{equipeBanco.find((membro) => /chefe/i.test(membro.role_title || '') && !/subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.role_title || 'Responsável pela Assessoria'}</small>
                 {usuarioAdmin && <button type="button" className="org-edit-button" onClick={() => editarLideranca('chefe')}>Editar Chefe</button>}
               </article>
-              <article className="org-leader-card org-deputy">
+              <article className="org-leader-card org-deputy">\n                <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
                 <span className="org-card-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4" /><path d="M4 21v-2a8 8 0 0 1 16 0v2z" /></svg></span>
                 <div className="org-leader-label">SUBCHEFE</div>
                 <h3>Subchefe</h3>
