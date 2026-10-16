@@ -390,3 +390,13 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
   .org-connector { height: 48px; }
   .org-chart > .sector-grid { grid-template-columns: 1fr; }
 }
+
+
+/* Hierarquia em cascata: Chefe acima do Subchefe, setores abaixo */
+.org-leadership { grid-template-columns: minmax(0, 330px); gap: 30px; position: relative; }
+.org-chief::after { content: ""; position: absolute; top: 100%; left: 50%; height: 30px; border-left: 1px solid #46606c; }
+.org-deputy { position: relative; }
+.org-connector { margin-top: 0; }
+@media (max-width: 720px) {
+  .org-leadership { grid-template-columns: minmax(0, 330px); gap: 30px; }
+}
