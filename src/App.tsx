@@ -392,7 +392,7 @@ export default function App() {
               <article className="org-leader-card org-deputy">
                 <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
                 <div className="org-leader-label">SUBCHEFE</div>
-                <p>{equipeBanco.find((membro) => /subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p>
+                <p>{equipeBanco.find((membro) => /subchefe da astinf|subchefe da assessoria/i.test(membro.role_title || '') && !(/administrativo/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '')))?.display_name || 'Nome não cadastrado'}</p>
                 <small>{equipeBanco.find((membro) => /subchefe da astinf|subchefe da assessoria/i.test(membro.role_title || '') && !(/administrativo/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '')))?.role_title || 'Apoio à chefia e coordenação'}</small>
                 {usuarioAdmin && <button type="button" className="org-edit-button" onClick={() => editarLideranca('subchefe')}>Editar Subchefe</button>}
               </article>
