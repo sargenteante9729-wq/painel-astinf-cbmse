@@ -207,15 +207,19 @@ export default function App() {
     setAdminSecao('equipe'); setMembroEditando(membro.id); setMembroSetor(membro.sector_id); setMembroNome(membro.display_name); setMembroFuncao(membro.role_title || ''); setMensagemAdmin('Editando integrante: ' + membro.display_name);
   }
   function editarLideranca(tipo: 'chefe' | 'subchefe') {
-    const membro = equipeBanco.find((item) => tipo === 'chefe'
-      ? /chefe da astinf|chefe da assessoria/i.test(item.role_title || '')
-      : /subchefe da astinf|subchefe da assessoria/i.test(item.role_title || ''));
+    const membro = equipeBanco.find((item) => {
+      const nomeSetor = setoresBanco.find((setor) => setor.id === item.sector_id)?.name || '';
+      const funcaoCorreta = tipo === 'chefe'
+        ? /chefe da astinf|chefe da assessoria/i.test(item.role_title || '')
+        : /subchefe da astinf|subchefe da assessoria/i.test(item.role_title || '');
+      return funcaoCorreta && !/administrativo/i.test(nomeSetor);
+    });
     setAdminSecao('chefia');
     if (membro) {
       setMembroEditando(membro.id); setMembroSetor(membro.sector_id); setMembroNome(membro.display_name); setMembroFuncao(tipo === 'chefe' ? 'Chefe da ASTINF' : 'Subchefe da ASTINF');
       setMensagemAdmin('Editando ' + (tipo === 'chefe' ? 'Chefe' : 'Subchefe') + ' da ASTINF.');
     } else {
-      setMembroEditando(null); setMembroSetor(setoresBanco[0]?.id || ''); setMembroNome(''); setMembroFuncao(tipo === 'chefe' ? 'Chefe da ASTINF' : 'Subchefe da ASTINF');
+      setMembroEditando(null); setMembroSetor(setoresBanco.find((setor) => !/administrativo/i.test(setor.name))?.id || setoresBanco[0]?.id || ''); setMembroNome(''); setMembroFuncao(tipo === 'chefe' ? 'Chefe da ASTINF' : 'Subchefe da ASTINF');
       setMensagemAdmin('Cadastre o nome para ' + (tipo === 'chefe' ? 'Chefe' : 'Subchefe') + ' da ASTINF e salve.');
     }
     document.querySelector('.admin-manager')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -349,10 +353,10 @@ export default function App() {
               <div className="admin-record-list">{sistemasBanco.map((sistema) => <article className="admin-record" key={sistema.id}><div><strong>{sistema.name}</strong><p>{sistema.description || 'Sem descrição.'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarSistema(sistema)}>Editar</button><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirSistema(sistema)}>Excluir</button></div></article>)}{sistemasBanco.length === 0 && <p className="connection-note">Nenhum sistema cadastrado.</p>}</div>
             </>}
             {adminSecao === 'chefia' && <>
-              <p className="connection-note">Edite os nomes e as funções exibidos nos cards de Chefe e Subchefe do organograma. Os dados são salvos no cadastro da equipe.</p>
+              <p className="connection-note">Chefe e Subchefe da ASTINF são funções independentes da chefia de qualquer setor. Não selecione o setor Administrativo para esses cadastros.</p>
               <div className="admin-record-list">
-                <article className="admin-record"><div><strong>Chefe</strong><p>{equipeBanco.find((membro) => /chefe da astinf|chefe da assessoria/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarLideranca('chefe')}>Editar Chefe</button></div></article>
-                <article className="admin-record"><div><strong>Subchefe</strong><p>{equipeBanco.find((membro) => /subchefe da astinf|subchefe da assessoria/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarLideranca('subchefe')}>Editar Subchefe</button></div></article>
+                <article className="admin-record"><div><strong>Chefe</strong><p>{equipeBanco.find((membro) => /chefe da astinf|chefe da assessoria/i.test(membro.role_title || '') && !(/administrativo/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '')))?.display_name || 'Nome não cadastrado'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarLideranca('chefe')}>Editar Chefe</button></div></article>
+                <article className="admin-record"><div><strong>Subchefe</strong><p>{equipeBanco.find((membro) => /subchefe da astinf|subchefe da assessoria/i.test(membro.role_title || '') && !(/administrativo/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '')))?.display_name || 'Nome não cadastrado'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarLideranca('subchefe')}>Editar Subchefe</button></div></article>
               </div>
               {(mensagemAdmin.startsWith('Editando Chefe') || mensagemAdmin.startsWith('Editando Subchefe') || mensagemAdmin.startsWith('Cadastre o nome')) && <form className="admin-content-form" onSubmit={cadastrarMembro}>
                 <h4>{membroEditando ? 'Editar integrante da chefia' : 'Cadastrar integrante da chefia'}</h4>
@@ -381,15 +385,15 @@ export default function App() {
               <article className="org-leader-card org-chief">
                 <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
                 <div className="org-leader-label">CHEFE</div>
-                <p>{equipeBanco.find((membro) => /chefe da astinf|chefe da assessoria/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p>
-                <small>{equipeBanco.find((membro) => /chefe da astinf|chefe da assessoria/i.test(membro.role_title || ''))?.role_title || 'Responsável pela Assessoria'}</small>
+                <p>{equipeBanco.find((membro) => /chefe da astinf|chefe da assessoria/i.test(membro.role_title || '') && !(/administrativo/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '')))?.display_name || 'Nome não cadastrado'}</p>
+                <small>{equipeBanco.find((membro) => /chefe da astinf|chefe da assessoria/i.test(membro.role_title || '') && !(/administrativo/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '')))?.role_title || 'Responsável pela Assessoria'}</small>
                 {usuarioAdmin && <button type="button" className="org-edit-button" onClick={() => editarLideranca('chefe')}>Editar Chefe</button>}
               </article>
               <article className="org-leader-card org-deputy">
                 <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
                 <div className="org-leader-label">SUBCHEFE</div>
                 <p>{equipeBanco.find((membro) => /subchefe|sub-chefe|adjunto/i.test(membro.role_title || ''))?.display_name || 'Nome não cadastrado'}</p>
-                <small>{equipeBanco.find((membro) => /subchefe da astinf|subchefe da assessoria/i.test(membro.role_title || ''))?.role_title || 'Apoio à chefia e coordenação'}</small>
+                <small>{equipeBanco.find((membro) => /subchefe da astinf|subchefe da assessoria/i.test(membro.role_title || '') && !(/administrativo/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '')))?.role_title || 'Apoio à chefia e coordenação'}</small>
                 {usuarioAdmin && <button type="button" className="org-edit-button" onClick={() => editarLideranca('subchefe')}>Editar Subchefe</button>}
               </article>
             </div>
