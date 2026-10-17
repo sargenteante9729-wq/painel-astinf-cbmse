@@ -632,3 +632,19 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
   height: 13px;
   border-left: 3px solid #ff5722;
 }
+
+
+/* Solicitação: remover todas as linhas de interligação do organograma */
+.org-chief::after,
+.org-leader-card.org-deputy::after,
+.org-connector::before,
+.org-connector::after,
+.org-chart > .sector-grid .sector-card::before {
+  content: none !important;
+  display: none !important;
+  border: 0 !important;
+}
+.org-connector {
+  height: 12px !important;
+  margin: 0 0 12px !important;
+}
