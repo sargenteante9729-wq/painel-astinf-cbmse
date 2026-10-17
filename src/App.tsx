@@ -212,18 +212,29 @@ export default function App() {
       const funcaoCorreta = tipo === 'chefe'
         ? /chefe da astinf|chefe da assessoria/i.test(item.role_title || '')
         : /subchefe da astinf|subchefe da assessoria/i.test(item.role_title || '');
-      return funcaoCorreta && !/administrativo/i.test(nomeSetor);
+      return funcaoCorreta && /^chefia astinf$/i.test(nomeSetor.trim());
     });
     setAdminSecao('chefia');
     if (membro) {
       setMembroEditando(membro.id); setMembroSetor(membro.sector_id); setMembroNome(membro.display_name); setMembroFuncao(tipo === 'chefe' ? 'Chefe da ASTINF' : 'Subchefe da ASTINF');
       setMensagemAdmin('Editando ' + (tipo === 'chefe' ? 'Chefe' : 'Subchefe') + ' da ASTINF.');
     } else {
-      setMembroEditando(null); setMembroSetor(setoresBanco.find((setor) => !/administrativo/i.test(setor.name))?.id || setoresBanco[0]?.id || ''); setMembroNome(''); setMembroFuncao(tipo === 'chefe' ? 'Chefe da ASTINF' : 'Subchefe da ASTINF');
+      setMembroEditando(null); setMembroSetor(''); setMembroNome(''); setMembroFuncao(tipo === 'chefe' ? 'Chefe da ASTINF' : 'Subchefe da ASTINF');
       setMensagemAdmin('Cadastre o nome para ' + (tipo === 'chefe' ? 'Chefe' : 'Subchefe') + ' da ASTINF e salve.');
     }
     document.querySelector('.admin-manager')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+  async function limparRegistrosAnteriores() {
+    if (!supabase || !usuarioAdmin) return;
+    const confirmar = window.confirm('Excluir TODOS os registros atuais da tabela de equipe, incluindo os registros de Chefe e Subchefe? Esta ação não pode ser desfeita. Os cadastros poderão ser refeitos depois.');
+    if (!confirmar) return;
+    setSalvandoItem(true); setMensagemAdmin('');
+    const { error } = await supabase.from('team_members').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    if (error) setMensagemAdmin('Não foi possível excluir os registros anteriores: ' + error.message);
+    else { setEquipeBanco([]); setMembroEditando(null); setMembroSetor(''); setMembroNome(''); setMembroFuncao(''); setMensagemAdmin('Registros anteriores de equipe e chefia excluídos.'); }
+    setSalvandoItem(false);
+  }
+
   async function cadastrarMembro(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (!supabase || !usuarioAdmin) return;
     setSalvandoItem(true); setMensagemAdmin('');
@@ -345,10 +356,25 @@ export default function App() {
               <button type="button" className={adminSecao === 'setores' ? 'active' : ''} onClick={() => setAdminSecao('setores')}>Cards / setores</button>
               <button type="button" className={adminSecao === 'atividades' ? 'active' : ''} onClick={() => setAdminSecao('atividades')}>Atribuições / atividades</button>
               <button type="button" className={adminSecao === 'sistemas' ? 'active' : ''} onClick={() => setAdminSecao('sistemas')}>Sistemas</button>
-              <button type="button" className={adminSecao === 'equipe' ? 'active' : ''} onClick={() => setAdminSecao('equipe')}>Equipe</button><button type="button" className={adminSecao === 'chefia' ? 'active' : ''} onClick={() => setAdminSecao('chefia')}>Chefe / Subchefe</button>
+              <button type="button" className={adminSecao === 'equipe' ? 'active' : ''} onClick={() => setAdminSecao('equipe')}>Equipe</button>
             </div>
             {adminSecao === 'setores' && <>
-              <p className="connection-note">Edite os dados exibidos nos cards. A imagem e a cor de cada card continuam seguindo o tema visual definido para o setor.</p>
+              <p className="connection-note">Edite os dados dos cards e selecione abaixo qual função da chefia da ASTINF deseja cadastrar ou alterar. Esses registros são independentes dos chefes dos setores.</p>
+              <div className="admin-record-list">
+                <article className="admin-record"><div><strong>Chefe da ASTINF</strong><p>{equipeBanco.find((m) => /^chefe da astinf$|^chefe da assessoria$/i.test((m.role_title || '').trim()) && /^chefia astinf$/i.test(setoresBanco.find((s) => s.id === m.sector_id)?.name || '') )?.display_name || 'Nome não cadastrado'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarLideranca('chefe')}>Cadastrar / alterar</button></div></article>
+                <article className="admin-record"><div><strong>Subchefe da ASTINF</strong><p>{equipeBanco.find((m) => /^subchefe da astinf$|^subchefe da assessoria$/i.test((m.role_title || '').trim()) && /^chefia astinf$/i.test(setoresBanco.find((s) => s.id === m.sector_id)?.name || '') )?.display_name || 'Nome não cadastrado'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarLideranca('subchefe')}>Cadastrar / alterar</button></div></article>
+              </div>
+              {(mensagemAdmin.startsWith('Editando Chefe') || mensagemAdmin.startsWith('Editando Subchefe') || mensagemAdmin.startsWith('Cadastre o nome')) && <form className="admin-content-form" onSubmit={cadastrarMembro}>
+                <h4>{membroEditando ? 'Alterar função da chefia' : 'Cadastrar função da chefia'}</h4>
+                <p className="connection-note">Função selecionada: <strong>{membroFuncao}</strong>. O cadastro não será vinculado ao setor Administrativo.</p>
+                <label>Nome<input value={membroNome} onChange={(event) => setMembroNome(event.target.value)} required maxLength={140} placeholder="Nome completo" /></label>
+                <input type="hidden" value={membroFuncao} readOnly />
+                {mensagemAdmin && <p className={mensagemAdmin.includes('sucesso') ? 'admin-success' : 'admin-login-error'} role="status">{mensagemAdmin}</p>}
+                <div className="admin-form-actions"><button type="submit" disabled={salvandoItem || !membroNome.trim()}>{salvandoItem ? 'Salvando…' : 'Salvar função'}</button><button type="button" className="admin-cancel-edit" onClick={() => { setMembroEditando(null); setMembroSetor(''); setMembroNome(''); setMembroFuncao(''); setMensagemAdmin('Edição cancelada.'); }}>Cancelar</button></div>
+              </form>}
+              <div className="admin-record-list">
+                <article className="admin-record"><div><strong>Limpeza de registros anteriores</strong><p>Remove os registros antigos de equipe e chefia do banco. A operação exige confirmação.</p></div><div className="admin-record-actions"><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={limparRegistrosAnteriores}>Excluir registros anteriores</button></div></article>
+              </div>
               {setorEditando && <form className="admin-content-form" onSubmit={salvarSetor}>
                 <label>Nome do setor<input value={setorNome} onChange={(event) => setSetorNome(event.target.value)} required maxLength={100} /></label>
                 <label>Texto exibido no card<input value={setorDescricao} onChange={(event) => setSetorDescricao(event.target.value)} required maxLength={200} /></label>
@@ -374,21 +400,6 @@ export default function App() {
                 <div className="admin-form-actions"><button type="submit" disabled={salvandoItem}>{salvandoItem ? 'Salvando…' : sistemaEditando ? 'Salvar alterações' : 'Cadastrar sistema'}</button>{sistemaEditando && <button type="button" className="admin-cancel-edit" onClick={() => { setSistemaEditando(null); setSistemaNome(''); setSistemaDescricao(''); setMensagemAdmin('Edição cancelada.'); }}>Cancelar edição</button>}</div>
               </form>
               <div className="admin-record-list">{sistemasBanco.map((sistema) => <article className="admin-record" key={sistema.id}><div><strong>{sistema.name}</strong><p>{sistema.description || 'Sem descrição.'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarSistema(sistema)}>Editar</button><button type="button" className="activity-delete-button" disabled={salvandoItem} onClick={() => excluirSistema(sistema)}>Excluir</button></div></article>)}{sistemasBanco.length === 0 && <p className="connection-note">Nenhum sistema cadastrado.</p>}</div>
-            </>}
-            {adminSecao === 'chefia' && <>
-              <p className="connection-note">Chefe e Subchefe da ASTINF são funções independentes da chefia de qualquer setor. Não selecione o setor Administrativo para esses cadastros.</p>
-              <div className="admin-record-list">
-                <article className="admin-record"><div><strong>Chefe</strong><p>{equipeBanco.find((membro) => /chefe da astinf|chefe da assessoria/i.test(membro.role_title || '') && !(/administrativo/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '')))?.display_name || 'Nome não cadastrado'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarLideranca('chefe')}>Editar Chefe</button></div></article>
-                <article className="admin-record"><div><strong>Subchefe</strong><p>{equipeBanco.find((membro) => /subchefe da astinf|subchefe da assessoria/i.test(membro.role_title || '') && !(/administrativo/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '')))?.display_name || 'Nome não cadastrado'}</p></div><div className="admin-record-actions"><button type="button" className="admin-edit-button" disabled={salvandoItem} onClick={() => editarLideranca('subchefe')}>Editar Subchefe</button></div></article>
-              </div>
-              {(mensagemAdmin.startsWith('Editando Chefe') || mensagemAdmin.startsWith('Editando Subchefe') || mensagemAdmin.startsWith('Cadastre o nome')) && <form className="admin-content-form" onSubmit={cadastrarMembro}>
-                <h4>{membroEditando ? 'Editar integrante da chefia' : 'Cadastrar integrante da chefia'}</h4>
-                <label>Setor<select value={membroSetor} onChange={(event) => setMembroSetor(event.target.value)} required><option value="">Selecione o setor</option>{setoresBanco.map((setor) => <option key={setor.id} value={setor.id}>{setor.name}</option>)}</select></label>
-                <label>Nome<input value={membroNome} onChange={(event) => setMembroNome(event.target.value)} required maxLength={140} placeholder="Nome completo" /></label>
-                <label>Função<input value={membroFuncao} onChange={(event) => setMembroFuncao(event.target.value)} required maxLength={140} placeholder="Chefe da ASTINF ou Subchefe da ASTINF" /></label>
-                {mensagemAdmin && <p className={mensagemAdmin.includes('sucesso') ? 'admin-success' : 'admin-login-error'} role="status">{mensagemAdmin}</p>}
-                <div className="admin-form-actions"><button type="submit" disabled={salvandoItem || !membroSetor}>{salvandoItem ? 'Salvando…' : 'Salvar chefia'}</button><button type="button" className="admin-cancel-edit" onClick={() => { setMembroEditando(null); setMembroSetor(''); setMembroNome(''); setMembroFuncao(''); setMensagemAdmin('Edição cancelada.'); }}>Cancelar</button></div>
-              </form>}
             </>}
             {adminSecao === 'equipe' && <>
               <form className="admin-content-form" onSubmit={cadastrarMembro}>
