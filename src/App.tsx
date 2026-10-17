@@ -115,7 +115,7 @@ export default function App() {
     return () => { ativo = false; };
   }, []);
 
-  const setoresExibidos = setoresBanco.length ? setoresBanco.map((registro) => {
+  const setoresExibidos = setoresBanco.filter((registro) => !/^chefia astinf$/i.test(registro.name.trim())).length ? setoresBanco.filter((registro) => !/^chefia astinf$/i.test(registro.name.trim())).map((registro) => {
     const local = setores.find((item) => item.nome.toLowerCase() === registro.name.toLowerCase());
     const atividadesSetor = atividadesBanco.filter((atividade) => atividade.sector_id === registro.id);
     return { nome: registro.name, descricao: registro.description || local?.descricao || '', imagem: local?.imagem || setores[0].imagem, cor: local?.cor || '#58a6ff', atribuicoes: atividadesBanco.length ? atividadesSetor.length : (local?.atribuicoes || 0), detalhes: atividadesBanco.length ? atividadesSetor.map((atividade) => atividade.title) : (local?.detalhes || []), atividadesSetor, id: registro.id };
@@ -227,7 +227,30 @@ export default function App() {
   async function cadastrarMembro(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (!supabase || !usuarioAdmin) return;
     setSalvandoItem(true); setMensagemAdmin('');
-    const dados = { sector_id: membroSetor, display_name: membroNome.trim(), role_title: membroFuncao.trim(), is_active: true };
+    let setorDestino = membroSetor;
+    const funcaoChefia = /^(chefe da astinf|subchefe da astinf)$/i.test(membroFuncao.trim());
+    if (funcaoChefia) {
+      let { data: setorChefia } = await supabase.from('sectors').select('id').eq('name', 'CHEFIA ASTINF').maybeSingle();
+      if (!setorChefia) {
+        const { data: novoSetor, error: erroSetor } = await supabase.from('sectors').insert({
+          name: 'CHEFIA ASTINF',
+          description: 'Funções independentes da chefia da Assessoria',
+          purpose: 'Cadastro administrativo interno da chefia da ASTINF',
+          display_order: 999,
+          is_active: true
+        }).select('id').single();
+        if (erroSetor || !novoSetor) {
+          setMensagemAdmin('Não foi possível criar o cadastro independente da chefia: ' + (erroSetor?.message || 'erro desconhecido'));
+          setSalvandoItem(false);
+          return;
+        }
+        setorChefia = novoSetor;
+        const { data: setoresAtualizados } = await supabase.from('sectors').select('id,name,description,purpose,display_order,is_active').eq('is_active', true).order('display_order');
+        if (setoresAtualizados) setSetoresBanco(setoresAtualizados as SectorRecord[]);
+      }
+      setorDestino = setorChefia.id;
+    }
+    const dados = { sector_id: setorDestino, display_name: membroNome.trim(), role_title: membroFuncao.trim(), is_active: true };
     const { error } = membroEditando ? await supabase.from('team_members').update(dados).eq('id', membroEditando) : await supabase.from('team_members').insert(dados);
     if (error) setMensagemAdmin('Não foi possível salvar o integrante: ' + error.message);
     else { setMensagemAdmin(membroEditando ? 'Integrante alterado com sucesso.' : 'Integrante cadastrado com sucesso.'); setMembroNome(''); setMembroFuncao(''); setMembroSetor(''); setMembroEditando(null); await recarregarEquipe(); }
