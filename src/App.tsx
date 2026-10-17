@@ -214,7 +214,7 @@ export default function App() {
         : /subchefe da astinf|subchefe da assessoria/i.test(item.role_title || '');
       return funcaoCorreta && /^chefia astinf$/i.test(nomeSetor.trim());
     });
-    setAdminSecao('chefia');
+    setAdminSecao(tipo);
     if (membro) {
       setMembroEditando(membro.id); setMembroSetor(membro.sector_id); setMembroNome(membro.display_name); setMembroFuncao(tipo === 'chefe' ? 'Chefe da ASTINF' : 'Subchefe da ASTINF');
       setMensagemAdmin('Editando ' + (tipo === 'chefe' ? 'Chefe' : 'Subchefe') + ' da ASTINF.');
