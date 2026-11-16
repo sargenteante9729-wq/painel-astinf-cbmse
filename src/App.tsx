@@ -448,7 +448,7 @@ export default function App() {
           })()}
 
           {menuInstitucional === 'organograma' && !selecionado && (
-          <div className="org-chart">
+          <div className="org-chart pulse-org">
             <div className="org-leadership" aria-label="Comando da ASTINF">
               <article className="org-leader-card org-chief">
                 <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
