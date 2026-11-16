@@ -710,13 +710,23 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
 .institutional-leader-card .org-leader-image { height: 160px; }
 .org-chart.pulse-org .sector-card,
 .pulse-org .org-leader-card {
-  animation: astinf-card-pulse 2.8s ease-in-out infinite;
+  transform-origin: center center;
+  animation: astinf-card-pulse 1.25s ease-in-out infinite;
+  will-change: transform, box-shadow, filter;
 }
-.pulse-org .sector-card:nth-child(2n) { animation-delay: .35s; }
-.pulse-org .sector-card:nth-child(3n) { animation-delay: .7s; }
+.pulse-org .sector-card:nth-child(2n) { animation-delay: .16s; }
+.pulse-org .sector-card:nth-child(3n) { animation-delay: .32s; }
 @keyframes astinf-card-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 #e72a3b00; }
-  50% { box-shadow: 0 0 0 5px #e72a3b25, 0 12px 26px #0005; }
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 #ff293d00, 0 8px 20px #0003;
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.025);
+    box-shadow: 0 0 0 9px #e72a3b40, 0 0 28px #e72a3b55, 0 16px 32px #0007;
+    filter: brightness(1.16);
+  }
 }
 @media (max-width: 780px) {
   .section-title { align-items: stretch; }
