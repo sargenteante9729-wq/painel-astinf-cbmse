@@ -54,7 +54,7 @@ export default function App() {
   const [abertura, setAbertura] = useState(true);
   const [selecionado, setSelecionado] = useState<string | null>(null);
   const [abaDetalhes, setAbaDetalhes] = useState<'informacoes' | 'equipe' | 'atribuicoes' | 'sistemas' | null>(null);
-  const [menuInstitucional, setMenuInstitucional] = useState<'descricao' | 'chefe' | 'subchefe' | 'organograma'>('organograma');
+  const [menuInstitucional, setMenuInstitucional] = useState<'descricao' | 'chefe' | 'subchefe' | 'organograma'>('descricao');
   const [loginAberto, setLoginAberto] = useState(false);
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
