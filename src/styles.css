@@ -648,3 +648,84 @@ button, .sector-card { transition: border-color .18s ease, background .18s ease,
   height: 12px !important;
   margin: 0 0 12px !important;
 }
+
+
+/* Navegação institucional ASTINF — menus horizontais */
+.institutional-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+.institutional-menu button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  padding: 0 23px;
+  border: 1px solid #263f4b;
+  border-radius: 10px;
+  background: linear-gradient(110deg, #101f28, #0b1a22);
+  color: #dceaf0;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: .15px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.institutional-menu button:hover { border-color: #e72a3b; transform: translateY(-1px); }
+.institutional-menu button.active {
+  color: #fff;
+  border-color: #e61f32;
+  background: linear-gradient(110deg, #e61f32, #b80f20);
+  box-shadow: 0 7px 18px #bd102733;
+}
+.institutional-glass-card {
+  position: relative;
+  max-width: 980px;
+  margin: 18px auto 30px;
+  padding: clamp(22px, 4vw, 42px);
+  border: 1px solid #8bb8c755;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #d7f2ff16, #ffffff08 48%, #5aa5c016);
+  box-shadow: 0 18px 55px #0006, inset 0 1px #ffffff22;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: #e8f4fa;
+}
+.institutional-glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 17px;
+  pointer-events: none;
+  background: linear-gradient(120deg, #ffffff0c, transparent 42%, #7dc9e50a);
+}
+.institutional-glass-card h2 { position: relative; margin: 10px 0 18px; color: #fff; font-size: clamp(21px, 3vw, 30px); }
+.institutional-glass-card p { position: relative; color: #c1d5df; font-size: 15px; line-height: 1.85; margin: 0 0 14px; }
+.institutional-leader-view { display: flex; justify-content: center; padding: 20px 12px 32px; }
+.institutional-leader-card { max-width: 370px; min-height: 300px; box-shadow: 0 20px 50px #0006, 0 0 0 1px #ffffff08; }
+.institutional-leader-card .org-leader-image { height: 160px; }
+.org-chart.pulse-org .sector-card,
+.pulse-org .org-leader-card {
+  animation: astinf-card-pulse 2.8s ease-in-out infinite;
+}
+.pulse-org .sector-card:nth-child(2n) { animation-delay: .35s; }
+.pulse-org .sector-card:nth-child(3n) { animation-delay: .7s; }
+@keyframes astinf-card-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 #e72a3b00; }
+  50% { box-shadow: 0 0 0 5px #e72a3b25, 0 12px 26px #0005; }
+}
+@media (max-width: 780px) {
+  .section-title { align-items: stretch; }
+  .institutional-menu { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+  .institutional-menu button { min-height: 48px; padding: 0 6px; font-size: clamp(9px, 2.1vw, 12px); letter-spacing: 0; }
+}
+@media (max-width: 430px) {
+  .institutional-menu { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+  .institutional-menu button { min-height: 44px; padding: 0 3px; font-size: 8px; border-radius: 7px; }
+  .institutional-glass-card { padding: 20px 16px; }
+  .institutional-glass-card p { font-size: 13px; line-height: 1.7; }
+}
