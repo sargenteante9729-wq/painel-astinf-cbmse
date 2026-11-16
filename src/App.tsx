@@ -449,7 +449,7 @@ export default function App() {
 
           {menuInstitucional === 'organograma' && !selecionado && (
           <div className="org-chart pulse-org">
-            <div className="org-connector" aria-hidden="true"><span>ESTRUTURA ORGANIZACIONAL</span></div>
+            <div className="org-connector" aria-hidden="true"></div>
             <div className="sector-grid">
 
             {setoresExibidos.map((setor, index) => (
