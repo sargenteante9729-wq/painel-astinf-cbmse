@@ -54,6 +54,7 @@ export default function App() {
   const [abertura, setAbertura] = useState(true);
   const [selecionado, setSelecionado] = useState<string | null>(null);
   const [abaDetalhes, setAbaDetalhes] = useState<'informacoes' | 'equipe' | 'atribuicoes' | 'sistemas' | null>(null);
+  const [menuInstitucional, setMenuInstitucional] = useState<'descricao' | 'chefe' | 'subchefe' | 'organograma'>('organograma');
   const [loginAberto, setLoginAberto] = useState(false);
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -343,7 +344,12 @@ export default function App() {
       <main className="main-content">
         <section className="sector-section">
           <div className="section-title">
-            <div><h2>▦ &nbsp; ORGANOGRAMA DO SETOR</h2></div>
+            <nav className="institutional-menu" aria-label="Navegação institucional da ASTINF">
+              <button type="button" className={menuInstitucional === 'descricao' ? 'active' : ''} aria-pressed={menuInstitucional === 'descricao'} onClick={() => { setMenuInstitucional('descricao'); setSelecionado(null); setAbaDetalhes(null); }}>Descrição</button>
+              <button type="button" className={menuInstitucional === 'chefe' ? 'active' : ''} aria-pressed={menuInstitucional === 'chefe'} onClick={() => { setMenuInstitucional('chefe'); setSelecionado(null); setAbaDetalhes(null); }}>Chefe</button>
+              <button type="button" className={menuInstitucional === 'subchefe' ? 'active' : ''} aria-pressed={menuInstitucional === 'subchefe'} onClick={() => { setMenuInstitucional('subchefe'); setSelecionado(null); setAbaDetalhes(null); }}>Subchefe</button>
+              <button type="button" className={menuInstitucional === 'organograma' ? 'active' : ''} aria-pressed={menuInstitucional === 'organograma'} onClick={() => { setMenuInstitucional('organograma'); setSelecionado(null); setAbaDetalhes(null); }}>Organograma</button>
+            </nav>
             <div className="admin-actions">
               {usuarioAdmin && <><span className="admin-connected">Administrador conectado</span><button className="admin-entry" type="button" onClick={sairAdmin}>Sair</button></>}
             </div>
@@ -419,7 +425,29 @@ export default function App() {
             </>}
           </section>}
 
-          {!selecionado && (
+          {menuInstitucional === 'descricao' && !selecionado && <article className="institutional-glass-card">
+            <span className="subcard-kicker">ASTINF · CBMSE</span>
+            <h2>Assessoria de Tecnologia da Informação</h2>
+            <p>A Assessoria de Tecnologia da Informação (ASTINF) é o órgão estratégico do Corpo de Bombeiros Militar do Estado de Sergipe (CBMSE), diretamente subordinado ao Comando Geral, responsável por coordenar e orientar a implementação das políticas institucionais de Tecnologia da Informação e Comunicação (TIC), promovendo a governança, o planejamento e o desenvolvimento tecnológico da Corporação.</p>
+            <p>Compete à ASTINF propor diretrizes, estabelecer prioridades, planejar e acompanhar projetos, orientar e fiscalizar investimentos e contratações de tecnologia, bem como promover a capacitação dos servidores, a integração institucional e o alinhamento das soluções tecnológicas às necessidades operacionais e administrativas do CBMSE, observadas as diretrizes estratégicas e as recomendações dos órgãos de controle.</p>
+          </article>}
+
+          {(menuInstitucional === 'chefe' || menuInstitucional === 'subchefe') && !selecionado && (() => {
+            const tipo = menuInstitucional;
+            const funcao = tipo === 'chefe' ? 'Chefe da ASTINF' : 'Subchefe da ASTINF';
+            const membro = equipeBanco.find((item) => /^chefia astinf$/i.test(setoresBanco.find((setor) => setor.id === item.sector_id)?.name || '') && (item.role_title || '').trim().toLowerCase() === funcao.toLowerCase());
+            return <div className="institutional-leader-view">
+              <article className={`org-leader-card institutional-leader-card ${tipo === 'subchefe' ? 'org-deputy' : 'org-chief'}`}>
+                <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
+                <div className="org-leader-label">{tipo === 'chefe' ? 'CHEFE DA ASTINF' : 'SUBCHEFE DA ASTINF'}</div>
+                <p>{membro?.display_name || 'Nome não cadastrado'}</p>
+                <small>{funcao}</small>
+                {usuarioAdmin && <button type="button" className="org-edit-button" onClick={() => { editarLideranca(tipo); }}>Editar cadastro</button>}
+              </article>
+            </div>;
+          })()}
+
+          {menuInstitucional === 'organograma' && !selecionado && (
           <div className="org-chart">
             <div className="org-leadership" aria-label="Comando da ASTINF">
               <article className="org-leader-card org-chief">
