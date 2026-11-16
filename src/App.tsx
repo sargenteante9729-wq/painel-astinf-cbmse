@@ -449,22 +449,6 @@ export default function App() {
 
           {menuInstitucional === 'organograma' && !selecionado && (
           <div className="org-chart pulse-org">
-            <div className="org-leadership" aria-label="Comando da ASTINF">
-              <article className="org-leader-card org-chief">
-                <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
-                <div className="org-leader-label">CHEFE</div>
-                <p>{equipeBanco.find((membro) => /^chefia astinf$/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '') && /^chefe da astinf$/i.test((membro.role_title || '').trim()))?.display_name || 'Nome não cadastrado'}</p>
-                <small>{equipeBanco.find((membro) => /^chefia astinf$/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '') && /^chefe da astinf$/i.test((membro.role_title || '').trim()))?.role_title || 'Responsável pela Assessoria'}</small>
-                {usuarioAdmin && <button type="button" className="org-edit-button" onClick={() => editarLideranca('chefe')}>Editar Chefe</button>}
-              </article>
-              <article className="org-leader-card org-deputy">
-                <img className="org-leader-image" src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt="" />
-                <div className="org-leader-label">SUBCHEFE</div>
-                <p>{equipeBanco.find((membro) => /^chefia astinf$/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '') && /^subchefe da astinf$/i.test((membro.role_title || '').trim()))?.display_name || 'Nome não cadastrado'}</p>
-                <small>{equipeBanco.find((membro) => /^chefia astinf$/i.test(setoresBanco.find((setor) => setor.id === membro.sector_id)?.name || '') && /^subchefe da astinf$/i.test((membro.role_title || '').trim()))?.role_title || 'Apoio à chefia e coordenação'}</small>
-                {usuarioAdmin && <button type="button" className="org-edit-button" onClick={() => editarLideranca('subchefe')}>Editar Subchefe</button>}
-              </article>
-            </div>
             <div className="org-connector" aria-hidden="true"><span>ESTRUTURA ORGANIZACIONAL</span></div>
             <div className="sector-grid">
 
